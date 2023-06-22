@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users - Stack Overflow</title>
+    <link rel="icon" href="./stackoverflowfavicon.png" type="image/x-icon">
+    <style>
+        a {
+            text-decoration: none;
+        }
+        code {
+            font-size: medium;
+        }
+        #aboveNavBar {
+            background-color: rgb(235, 152, 0);
+            height: 3px;
+        }
+        #navBar {
+            border-style: none none solid none ;
+            border-width: 1px ;
+            border-color: rgb(169, 189, 207);
+            height: 44px;
+            align-items: center;
+            padding: 8px 20px 4px 46px;
+        }
+        #navBar a {
+            text-decoration: none;
+            width: fit-content;
+        }
+        #navBar a div svg {
+            height: 35px;
+            width: 30px;
+        }
+        #navBar a div span {
+            margin: 4px 0px 0px 12px;
+            font-family: sans-serif;
+            font-size: 19px;
+            color: rgb(39, 39, 39);
+        }
+        #navBar div {
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s;
+            width: 200px;
+        }
+        .nav-links {
+            list-style: none;
+            display: flex;
+            margin: -25px 0px 0px 140px;
+        }
+        .nav-links li {
+            font-size: 13px;
+            font-family: sans-serif;
+            font-weight: 200px;
+            margin-right: 28px;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: #666;
+            width: fit-content;
+        }
+        .nav-links a:hover {
+            border-radius: 30%;
+            width: 200px;
+            height: 200px;
+            background-color: #b1b1b1;
+            color: black;
+        }
+        #searchContainer {
+            display: flex;
+            width: 710px;
+            height: 30px;
+            border: 1.5px solid #ccc;
+            border-radius: 2px;
+            margin: -25px 0px 0px 400px;
+        }
+        #searchContainer:hover {
+            position: static;
+            border: 1.5px solid #6584ac;
+        }
+        #searchContainer input {
+            flex-grow: 1;
+            border: none;
+            padding: 10px;
+            font-size: 14px;
+            outline: none;        
+        }
+        #searchContainer button {
+            display: none;       
+        }  
+        #searchContainer img {
+            height: 17px;
+            width: 17px;
+            margin: 6px 0px 0px 9px;
+        }       
+        .user-buttons {
+            margin: -33px 0px 0px 1120px;
+        }
+        .login-button, .signup-button {
+            padding: 8.5px 10px;
+            margin-right: 10px;
+            font-size: 12px;
+            font-family: sans-serif;
+            font-weight: 200px;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        .login-button {
+            border: 0.5px solid hsl(205, 41%, 63%);
+            background-color: hsl(205, 46%, 92%);
+            color: hsl(205, 47%, 42%);
+        }
+        .signup-button {
+            width: auto;
+            margin-left: -7px;
+            border: 2px solid #e9ecee;
+            background-color: #3291d4;
+            color: white;
+        }
+        .login-button:hover {
+            background-color: hsl(204, 54%, 79%);
+        }
+        .signup-button:hover {
+            background-color: #025d9e;
+            color: #fff;
+        }
+        #left-side-bar {
+            height: fit-content;
+            width: 220px;
+            margin: -1px 0px 0px -8px;
+            border: 1px solid rgb(133, 164, 165);
+        }
+        #left-side-bar-container {
+            padding: 19px 5px 0px 12px ;
+            width: auto;
+        }
+        #aside-nav-links {
+            list-style: none;
+        }
+        #aside-nav-links li {
+            font-size: 13px;
+            font-family: sans-serif;
+            font-weight: 200px;
+            list-style: none;
+            color: rgb(78, 74, 74);
+            height: 30px;
+        }
+
+        #aside-nav-links li a {
+            text-decoration: none;
+            color: rgb(78, 74, 74);
+        }
+        #aside-nav-links li a:hover {
+            color: black;
+        }
+        #aside-nav-links-innerList {
+            margin: 0px 60px 0px 28px;
+            height: 25px;
+        }
+        #aside-nav-links-innerList-selected {
+            margin: -10px 0px 0px -10px;
+            font-weight: bolder;
+            padding: 12px 0px 0px 37px;
+            background-color: #b1b1b1;
+            border-right: 2px solid orangered;
+        }
+        #containers {
+            display: flex;
+            margin-bottom: 50px;
+        }
+        #users-container {
+            padding: 20px 30px 30px 40px;
+            width: 1200px;
+        }
+        #users-header {
+            width: 58%;
+            padding: 10px 0px 30px 0px;
+        }
+        #users-header span{
+            font-family: Arial, Helvetica, sans-serif;
+            font-weight: lighter;
+            font-size: x-large;
+        }
+        #search-container {
+            padding: 0px 0px 0px 10px;
+            width: fit-content;
+            border: 0.5px solid hsl(210, 8%, 75%);
+        }
+        #search-container input {
+            border: none;
+            height: 30px;
+        }
+        #search-container svg {
+            margin: 5px 10px -5px 0px;
+        }
+        #filters-container {
+            margin: -20px 0px 30px 0px;
+            float: right;
+        }
+        #filters-container a{
+            font-family: Verdana;
+            font-size: 15px;
+            display: inline;
+            width: fit-content;
+            padding: 7px;
+            color: rgb(54, 51, 51);
+            border: 0.5px solid hsl(210, 8%, 45%);
+        }
+        #filters-container a:hover {
+            cursor: pointer;
+            color: black;
+            background-color: #666;
+        }
+        #users {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 25px;
+        }
+        @media (max-width: 800px) {
+            #users {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        #user {
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            font-size: small;
+            color: hsl(210, 8%, 25%);
+            padding: 15px 15px 15px 17px;
+            border: 0.5px solid hsl(210, 8%, 85%);
+            border-radius: 3px;
+            display: list-item;
+            list-style: none;
+        }
+        #user a header {
+            font-size: 15px;
+            border-radius: 2px;
+            padding: 4px 7px 4px 7px;
+            color: #3291d4;
+            width: fit-content;
+        }
+        #location {
+            margin: 3px 0px 0px 7px;
+            color: hsl(210, 1%, 44%);
+        }
+        #total-reputation-count {
+            margin: 0px 0px 0px 7px;
+            color: hsl(210, 1%, 44%);
+            font-weight: bold;
+        }
+        /* Footer styles */
+.footer {
+  background-color: hsl(210, 8%, 15%);
+  padding: 20px 0;
+}
+
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  max-width: 1150px;
+  margin: 0 auto;
+}
+
+.footer-column {
+  flex-basis: 25%;
+  padding: 0 10px;
+}
+
+.footer-column h4 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #ccc;
+}
+
+.footer-column ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-column ul li {
+    margin: 10px 0px 15px 0px;
+}
+
+.footer-column ul li a {
+  color: #8a8484;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.footer-column ul li a:hover {
+  color: #0077cc;
+}
+</style>
+</head>
+<body>
+    <main id="aboveNavBar"></main>
+    <nav id="navBar">
+        <a th:href="@{/home}">
+            <div>
+                <svg aria-hidden="true" viewBox="0 0 32 37">
+                    <path d="M26 33v-9h4v13H0V24h4v9h22Z" fill="#BCBBBB"></path><path d="m21.5 0-2.7 2 9.9 13.3 2.7-2L21.5 0ZM26 18.4 13.3 7.8l2.1-2.5 12.7 10.6-2.1 2.5ZM9.1 15.2l15 7 1.4-3-15-7-1.4 3Zm14 10.79.68-2.95-16.1-3.35L7 23l16.1 2.99ZM23 30H7v-3h16v3Z" fill="#F48024"></path>
+                </svg>
+                <span>stack<b>overflow</b></span>
+            </div>
+        </a>
+        <ul class="nav-links">
+            <li><a href="https://stackoverflow.co/">About</a></li>
+            <li><a href="https://stackoverflow.co/advertising/">Products</a></li>
+            <li><a href="https://stackoverflow.co/teams/">For Teams</a></li>
+        </ul>
+        <form action="#" id="searchContainer">
+            <img src="./search-26234.png" />
+            <input type="search" placeholder="Search..."/>
+            <button type="submit"></button>
+        </form>
+        <div class="user-buttons" sec:authorize="isAnonymous()">
+            <a th:href="@{/login}" class="login-button">Log In</a>
+            <a th:href="@{/signup}" class="signup-button">Sign Up</a>
+        </div>
+        <div class="user-buttons" sec:authorize="isAuthenticated()">
+            <a th:href="@{/logout}" class="login-button">Log Out</a>
+        </div>
+    </nav>
+    <div id="containers">
+        <aside id="left-side-bar">
+            <div id="left-side-bar-container">
+                <nav role="navigation">
+                    <ol id="aside-nav-links">
+                        <li>
+                            <a th:href="@{/home}">
+                                <span>Home</span>
+                            </a>
+                        </li>
+                    </ol>
+                    <ol id="aside-nav-links">
+                        <li>
+                            <span>PUBLIC</span>
+                        </li>
+                        <li id="aside-nav-links-innerList">
+                            <a th:href="@{/}">
+                                <span>Questions</span>
+                            </a>
+                        </li>
+                        <li id="aside-nav-links-innerList">
+                            <a th:href="@{/tags}">
+                                <span>Tags</span>
+                            </a>
+                        </li>
+                        <li id="aside-nav-links-innerList-selected">
+                            <a th:href="@{/users}">
+                                <span>Users</span>
+                            </a>
+                        </li>
+                        <li id="aside-nav-links-innerList">
+                            <a href="https://stackoverflow.com/jobs/companies">
+                                <span>Companies</span>
+                            </a>
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </aside>
+        <section id="users-container">
+            <header id="users-header">
+                <span>Users</span>
+            </header>
+            <div id="search-sort-container">
+                <form action="#">
+                    <div id="search-container">
+                        <svg width="18" height="18" viewBox="0 0 18 18"><path d="m18 16.5-5.14-5.18h-.35a7 7 0 1 0-1.19 1.19v.35L16.5 18l1.5-1.5ZM12 7A5 5 0 1 1 2 7a5 5 0 0 1 10 0Z"></path></svg>
+                        <input type="text" placeholder="Filter by user">
+                        <button type="submit" style="display: none;"></button>
+                    </div>
+                </form>
+                <div id="filters-container">
+                    <a href="#">
+                        <span>Reputation</span>
+                    </a>
+                    <a href="#">
+                        <span>New Users</span>
+                    </a>
+                    <a href="#">
+                        <span>Voters</span>
+                    </a>
+                    <a href="#">
+                        <span>Editors</span>
+                    </a>
+                </div>
+            </div>
+            <br><br><br>
+            <div id="users">
+                <div id="user">
+                    <a href="link of all que related with this tag">
+                        <header>Name</header>
+                    </a>
+                    <p id="location">location</p>
+                    <span id="total-reputation-count">10000000</span>
+                </div>
+                <div id="user">
+                    <a href="link of all que related with this tag">
+                        <header>Name</header>
+                    </a>
+                    <p id="location">location</p>
+                    <span id="total-reputation-count">10000000</span>
+                </div>
+                <div id="user">
+                    <a href="link of all que related with this tag">
+                        <header>Name</header>
+                    </a>
+                    <p id="location">location</p>
+                    <span id="total-reputation-count">10000000</span>
+                </div>
+                <div id="user">
+                    <a href="link of all que related with this tag">
+                        <header>Name</header>
+                    </a>
+                    <p id="location">location</p>
+                    <span id="total-reputation-count">10000000</span>
+                </div>
+                <div id="user">
+                    <a href="link of all que related with this tag">
+                        <header>Name</header>
+                    </a>
+                    <p id="location">location</p>
+                    <span id="total-reputation-count">10000000</span>
+                </div>
+                <div id="user">
+                    <a href="link of all que related with this tag">
+                        <header>Name</header>
+                    </a>
+                    <p id="location">location</p>
+                    <span id="total-reputation-count">10000000</span>
+                </div>
+                <div id="user">
+                    <a href="link of all que related with this tag">
+                        <header>Name</header>
+                    </a>
+                    <p id="location">location</p>
+                    <span id="total-reputation-count">10000000</span>
+                </div>
+                <div id="user">
+                    <a href="link of all que related with this tag">
+                        <header>Name</header>
+                    </a>
+                    <p id="location">location</p>
+                    <span id="total-reputation-count">10000000</span>
+                </div>
+                <div id="user">
+                    <a href="link of all que related with this tag">
+                        <header>Name</header>
+                    </a>
+                    <p id="location">location</p>
+                    <span id="total-reputation-count">10000000</span>
+                </div>
+                <div id="user">
+                    <a href="link of all que related with this tag">
+                        <header>Name</header>
+                    </a>
+                    <p id="location">location</p>
+                    <span id="total-reputation-count">10000000</span>
+                </div>
+                <div id="user">
+                    <a href="link of all que related with this tag">
+                        <header>Name</header>
+                    </a>
+                    <p id="location">location</p>
+                    <span id="total-reputation-count">10000000</span>
+                </div>
+                <div id="user">
+                    <a href="link of all que related with this tag">
+                        <header>Name</header>
+                    </a>
+                    <p id="location">location</p>
+                    <span id="total-reputation-count">10000000</span>
+                </div>
+                <div id="user">
+                    <a href="link of all que related with this tag">
+                        <header>Name</header>
+                    </a>
+                    <p id="location">location</p>
+                    <span id="total-reputation-count">10000000</span>
+                </div>
+                <div id="user">
+                    <a href="link of all que related with this tag">
+                        <header>Name</header>
+                    </a>
+                    <p id="location">location</p>
+                    <span id="total-reputation-count">10000000</span>
+                </div>
+                
+            </div>
+        </section>
+    </div>
+    <footer class="footer">
+        <div class="footer-inner">
+            <a th:href="@{/home}" aria-label="Stack Overflow"><svg aria-hidden="true" class="native svg-icon iconLogoGlyphMd" width="32" height="37" viewBox="0 0 32 37"><path d="M26 33v-9h4v13H0V24h4v9h22Z" fill="#BCBBBB"></path><path d="m21.5 0-2.7 2 9.9 13.3 2.7-2L21.5 0ZM26 18.4 13.3 7.8l2.1-2.5 12.7 10.6-2.1 2.5ZM9.1 15.2l15 7 1.4-3-15-7-1.4 3Zm14 10.79.68-2.95-16.1-3.35L7 23l16.1 2.99ZM23 30H7v-3h16v3Z" fill="#F48024"></path></svg></a>
+          <div class="footer-column">
+            <h4>STACK OVERFLOW</h4>
+            <ul>
+                <li><a th:href="@{/}">Questions</a></li>
+                <li><a href="https://stackoverflow.com/help">Help</a></li>
+            </ul>
+          </div>
+          <div class="footer-column">
+            <h4>PRODUCTS</h4>
+            <ul>
+                <li><a href="https://stackoverflow.co/teams/">Team</a></li>
+                <li><a href="https://stackoverflow.co/advertising/">Advertising</a></li>
+                <li><a href="https://stackoverflow.co/collectives/">Collectives</a></li>
+                <li><a href="https://stackoverflow.co/talent/">Talent</a></li>
+            </ul>
+          </div>
+          <div class="footer-column">
+            <h4>COMPANY</h4>
+            <ul>
+                <li><a href="https://stackoverflow.co/">About</a></li>
+                <li><a href="https://stackoverflow.co/company/press">Press</a></li>
+                <li><a href="https://stackoverflow.co/company/work-here">Work here</a></li>
+                <li><a href="https://stackoverflow.com/legal/terms-of-service">Legal</a></li>
+            </ul>
+          </div>
+          <div class="footer-column">
+            <h4>STACK EXCHANGE NETWORK</h4>
+            <ul>
+                <li><a href="https://stackexchange.com/sites#technology">Technology</a></li>
+                <li><a href="https://stackexchange.com/sites#science">Science</a></li>
+                <li><a href="https://stackexchange.com/sites#business">Business</a></li>
+            </ul>
+          </div>
+        </div>
+      </footer>
+</body>

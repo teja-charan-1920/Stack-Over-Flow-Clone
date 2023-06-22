@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timeline</title>
+    <link rel="icon" href="./stackoverflowfavicon.png" type="image/x-icon">
+    <style>
+        a {
+            text-decoration: none;
+        }
+        code {
+            font-size: medium;
+        }
+        #aboveNavBar {
+            background-color: rgb(235, 152, 0);
+            height: 3px;
+        }
+        #navBar {
+            border-style: none none solid none ;
+            border-width: 1px ;
+            border-color: rgb(169, 189, 207);
+            height: 44px;
+            align-items: center;
+            padding: 8px 20px 4px 46px;
+        }
+        #navBar a {
+            text-decoration: none;
+            width: fit-content;
+        }
+        #navBar a div svg {
+            height: 35px;
+            width: 30px;
+        }
+        #navBar a div span {
+            margin: 4px 0px 0px 12px;
+            font-family: sans-serif;
+            font-size: 19px;
+            color: rgb(39, 39, 39);
+        }
+        #navBar div {
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s;
+            width: 200px;
+        }
+        .nav-links {
+            list-style: none;
+            display: flex;
+            margin: -25px 0px 0px 140px;
+        }
+        .nav-links li {
+            font-size: 13px;
+            font-family: sans-serif;
+            font-weight: 200px;
+            margin-right: 28px;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: #666;
+            width: fit-content;
+        }
+        .nav-links a:hover {
+            border-radius: 30%;
+            width: 200px;
+            height: 200px;
+            background-color: #b1b1b1;
+            color: black;
+        }
+        #searchContainer {
+            display: flex;
+            width: 710px;
+            height: 30px;
+            border: 1.5px solid #ccc;
+            border-radius: 2px;
+            margin: -25px 0px 0px 400px;
+        }
+        #searchContainer:hover {
+            position: static;
+            border: 1.5px solid #6584ac;
+        }
+        #searchContainer input {
+            flex-grow: 1;
+            border: none;
+            padding: 10px;
+            font-size: 14px;
+            outline: none;
+        }
+        #searchContainer button {
+            display: none;
+        }
+        #searchContainer img {
+            height: 17px;
+            width: 17px;
+            margin: 6px 0px 0px 9px;
+        }
+        .user-buttons {
+            margin: -33px 0px 0px 1120px;
+        }
+        .login-button, .signup-button {
+            padding: 8.5px 10px;
+            margin-right: 10px;
+            font-size: 12px;
+            font-family: sans-serif;
+            font-weight: 200px;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        .login-button {
+            border: 0.5px solid hsl(205, 41%, 63%);
+            background-color: hsl(205, 46%, 92%);
+            color: hsl(205, 47%, 42%);
+        }
+        .signup-button {
+            width: auto;
+            margin-left: -7px;
+            border: 2px solid #e9ecee;
+            background-color: #3291d4;
+            color: white;
+        }
+        .login-button:hover {
+            background-color: hsl(204, 54%, 79%);
+        }
+        .signup-button:hover {
+            background-color: #025d9e;
+            color: #fff;
+        }
+        #left-side-bar {
+            height: fit-content;
+            width: 220px;
+            margin: -1px 0px 0px -8px;
+            border: 1px solid rgb(133, 164, 165);
+        }
+        #left-side-bar-container {
+            padding: 19px 5px 0px 12px ;
+            width: auto;
+        }
+        #aside-nav-links {
+            list-style: none;
+        }
+        #aside-nav-links li {
+            font-size: 13px;
+            font-family: sans-serif;
+            font-weight: 200px;
+            list-style: none;
+            color: rgb(78, 74, 74);
+            height: 30px;
+        }
+
+        #aside-nav-links li a {
+            text-decoration: none;
+            color: rgb(78, 74, 74);
+        }
+        #aside-nav-links li a:hover {
+            color: black;
+        }
+        #aside-nav-links-innerList {
+            margin: 0px 0px 0px 28px;
+            height: 25px;
+        }
+        #aside-nav-links-innerList-selected {
+            margin: -10px 0px 0px -10px;
+            font-weight: bolder;
+            padding: 12px 0px 0px 37px;
+            background-color: #b1b1b1;
+            border-right: 2px solid orangered;
+        }
+        #containers {
+            display: flex;
+            margin-bottom: 50px;
+        }
+        #history-container {
+            display: flex;
+            flex-direction: column;
+            padding: 20px 0px 0px 50px;
+
+        }
+        #history-header {
+            display: flex;
+        }
+        #history-header p {
+            font-size: large;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            font-weight: lighter;
+            color: #4d4b4b;
+            padding: 0px 0px 30px 0px;
+            border-bottom: 1px solid hsl(202, 10%, 78%);
+            width: 900px;
+
+        }
+        #history-header p a{
+            color: #0b72bd;
+        }
+        #history-header p a:hover{
+            color: #519dd3;
+        }
+        #total-events {
+            padding: 20px 0px 10px 0px;
+        }
+        #total-events span {
+            font-weight: 600;
+            font-size: large;
+        }
+
+        #histories {
+            margin: 50px 0px 30px 0px;
+            width: 900px;
+            border-collapse: collapse;
+            border: 1px solid #ccc;
+            table-layout: fixed;
+        }
+        thead {
+            background-color: hsl(180, 2%, 82%);
+        }
+        #histories th,
+        #histories td {
+            padding: 10px;
+        }
+        #histories tbody tr td {
+            border-bottom: 1px solid hsl(180, 2%, 82%);
+        }
+        th:nth-child(1),
+        td:nth-child(1) {
+            width: 150px;
+        }
+        th:nth-child(2),
+        td:nth-child(2) {
+            width: 100px;
+        }
+        th:nth-child(3),
+        td:nth-child(3) {
+            width: 200px;
+        }
+        th:last-child, td:last-child {
+            width: 300px;
+        }
+
+
+
+         /* Footer styles */
+.footer {
+  background-color: hsl(210, 8%, 15%);
+  padding: 20px 0;
+}
+
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  max-width: 1150px;
+  margin: 0 auto;
+}
+
+.footer-column {
+  flex-basis: 25%;
+  padding: 0 10px;
+}
+
+.footer-column h4 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #ccc;
+}
+
+.footer-column ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-column ul li {
+    margin: 10px 0px 15px 0px;
+}
+
+.footer-column ul li a {
+  color: #8a8484;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.footer-column ul li a:hover {
+  color: #0077cc;
+}
+</style>
+</head>
+<body>
+<main id="aboveNavBar"></main>
+<nav id="navBar">
+    <a href="perticularQue.html">
+        <div>
+            <svg aria-hidden="true" viewBox="0 0 32 37">
+                <path d="M26 33v-9h4v13H0V24h4v9h22Z" fill="#BCBBBB"></path><path d="m21.5 0-2.7 2 9.9 13.3 2.7-2L21.5 0ZM26 18.4 13.3 7.8l2.1-2.5 12.7 10.6-2.1 2.5ZM9.1 15.2l15 7 1.4-3-15-7-1.4 3Zm14 10.79.68-2.95-16.1-3.35L7 23l16.1 2.99ZM23 30H7v-3h16v3Z" fill="#F48024"></path>
+            </svg>
+            <span>stack<b>overflow</b></span>
+        </div>
+    </a>
+    <ul class="nav-links">
+        <li><a href="#">About</a></li>
+        <li><a href="#">Products</a></li>
+        <li><a href="#">For Teams</a></li>
+    </ul>
+    <form action="#" id="searchContainer">
+        <img src="./search-26234.png" />
+        <input type="search" placeholder="Search..."/>
+        <button type="submit"></button>
+    </form>
+    <div class="user-buttons">
+        <a href="#" class="login-button">Log In</a>
+        <a href="#" class="signup-button">Sign Up</a>
+    </div>
+</nav>
+<div id="containers">
+    <aside id="left-side-bar">
+        <div id="left-side-bar-container">
+            <nav role="navigation">
+                <ol id="aside-nav-links">
+                    <li>
+                        <a href="#">
+                            <span>Home</span>
+                        </a>
+                    </li>
+                </ol>
+                <ol id="aside-nav-links">
+                    <li>
+                        <span>PUBLIC</span>
+                    </li>
+                    <li id="aside-nav-links-innerList-selected">
+                        <a href="#">
+                            <span>Questions</span>
+                        </a>
+                    </li>
+                    <li id="aside-nav-links-innerList">
+                        <a href="#">
+                            <span>Tags</span>
+                        </a>
+                    </li>
+                    <li id="aside-nav-links-innerList">
+                        <a href="#">
+                            <span>Users</span>
+                        </a>
+                    </li>
+                    <li id="aside-nav-links-innerList">
+                        <a href="#">
+                            <span>Companies</span>
+                        </a>
+                    </li>
+                </ol>
+            </nav>
+        </div>
+    </aside>
+    <section id="history-container">
+        <header id="history-header">
+            <p>Timeline for <a href="/questiions/{id}">bla bla que?</a></p>
+        </header>
+        <div id="total-events">
+            <span>16</span>
+            <span> events</span>
+            <section id="content-box" >
+        <div id="perticularQuetion">
+            <section>
+                <div id="question-container">
+                    <div class="question">
+                        <a th:href="@{/questions/{id}(id=${question.id})}"><p th:text="${question.title}"></p></a>
+                        <div class="signup-button" id="addQueBtn">
+                            <a href="/questions/ask" >Ask Questions?</a>
+                        </div>
+                    </div>
+                    <code id="queDetailsContainer">
+                        <span>Asked<b th:text="${question.createdAt}"></b></span>
+                        <span>Modified<b th:text="${question.updatedAt}"></b></span>
+                        <span>Viewed<b th:text="${question.views}"></b></span>
+                    </code>
+                </div>
+                <hr>
+                <div id="queDesciptionContainer">
+                    <div id="queDesciption">
+                        <div class="question-detail-container">
+                            <div class="voting-buttons">
+                                <form th:if="${question.showVoteUp}" th:action="@{/questions/{id}/vote/up(id=${question.id})}" method="post">
+                                    <button class="upvote-button">
+                                        <b>^</b>
+                                    </button>
+                                </form>
+                                <span class="vote-count" th:if="${question.votes != null }" th:text="${question.votes}"></span>
+                                <form th:if="${question.showVoteDown}" th:action="@{/questions/{id}/vote/down(id=${question.id})}" method="post">
+                                    <button class="downvote-button">
+                                        <b>^</b>
+                                    </button>
+                                </form>
+                                <br>
+                                <a href="#">
+                                    <img th:src="@{/images/icons8-history-32.png}">
+                                </a>
+                            </div>
+                            <div class="question-detail">
+                            <p th:text="${question.description}"> </p>
+                            <br>
+                            <form action="#" th:if="${question.tags != null }">
+                                    <span th:each="tag: ${question.tags}">
+                                    <button class="tag" th:text="${tag.name}"></button>
+                                    </span>
+                            </form>
+                            <div id="askedBy">
+                                <code th:text="${question.createdAt}"></code>
+                                <br>
+                                <span>name bla bla</span>
+                            </div>
+                            </div>
+                        </div>
+
+                        <div id="totalAns">
+                            <code th:if="${question.answers != null }"><span th:text="${#sets.size(question.answers)}"></span></code>
+                            <form th:action="@{/questions/{id}(id=${question.id})}">
+                                <select type="" name="sort" onchange="this.form.submit()">
+                                    <option value="votes" th:selected="${question.sortBy == 'votes'}">Highest score(default)</option>
+                                    <option value="updatedAt" th:selected="${question.sortBy == 'updatedAt'}">Date Modified(newest first)</option>
+                                    <option value="createdAt" th:selected="${question.sortBy == 'createdAt'}">Date Created(oldest first)</option>
+                                </select>
+                            </form>
+                        </div>
+                        <div id="answers-container" th:if="${question.answers != null }" th:each="answer : ${question.answers}">
+                            <div id="answers" >
+                                <div class="voting-buttons">
+                                    <form th:if="${not #sets.contains(answer.votedUpByUsers,user)}"
+                                          th:action="@{/questions/{questionId}/answer/{answerId}/voteUp(questionId=${question.id},answerId=${answer.answerId})}"
+                                          method="post">
+                                        <button class="upvote-button">
+                                            <b>^</b>
+                                        </button>
+                                    </form>
+                                    <span class="vote-count" th:if="${answer.votes != null }" th:text="${answer.votes}"></span>
+                                    <form th:if="${not #sets.contains(answer.votedDownByUsers,user)}"
+                                          th:action="@{/questions/{questionId}/answer/{answerId}/voteDown(questionId=${question.id},answerId=${answer.answerId})}"
+                                          method="post">
+                                        <button class="downvote-button">
+                                            <b>^</b>
+                                        </button>
+                                    </form>
+                                    <br>
+                                    <a href="#">
+                                        <img th:src="@{/images/icons8-history-32.png}">
+                                    </a>
+                                </div>
+                                <div class="answer-comment-container">
+                                    <p th:text="${answer.answer}"></p>
+                                    <div id="commentss" th:each="comment : ${answer.comments}">
+                                        <hr>
+                                        <p th:text="${comment.comment}"></p>
+                                        <span>time</span>
+                                        <span>name</span>
+                                    </div>
+                                    <div id="create-comment-container">
+                                        <hr>
+                                        <div id="create-comment" onclick="toggleCommentForm(this)">
+                                            Add a comment
+                                        </div>
+                                        <form action="#" class="create-comment-form">
+                                            <textarea name="comment" id="comment-box"></textarea>
+                                            <button type="submit">Add comment</button>
+                                        </form>
+                                        <script>
+                                            function toggleCommentForm(button) {
+                                                var commentForm = button.nextElementSibling;
+                                                commentForm.classList.toggle("show");
+                                            }
+                                        </script>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div id="linksContainer">
+                        <header>related Que</header>
+                        <div id="relatedLinks">
+                            <ol>
+                                <li class="side-links"><a href="#">
+                                    <code class="side-links-votes">2222</code>
+                                    <span class="side-links-que"> is bla vlla bla bla bla bla bla bla blabla bla</span>
+                                </a></li>
+                                <li class="side-links"><a href="#">
+                                    <code class="side-links-votes">2222</code>
+                                    <span class="side-links-que"> is bla bla bla bla bla bla blabla bla</span>
+                                </a></li>
+                                <li class="side-links"><a href="#">
+                                    <code class="side-links-votes">2222</code>
+                                    <span class="side-links-que"> is bla bla bla bla bla bla blabla bla</span>
+                                </a></li>
+                                <li class="side-links"><a href="#">
+                                    <code class="side-links-votes">2222</code>
+                                    <span class="side-links-que"> is bla bla bla bla bla bla blabla bla</span>
+                                </a></li>
+                                <li class="side-links"><a href="#">
+                                    <code class="side-links-votes">2222</code>
+                                    <span class="side-links-que"> is bla bla bla bla bla bla blabla bla</span>
+                                </a></li>
+                                <li class="side-links"><a href="#">
+                                    <code class="side-links-votes">2222</code>
+                                    <span class="side-links-que"> is bla bla bla bla bla bla blabla bla</span>
+                                </a></li>
+                                <li class="side-links"><a href="#">
+                                    <code class="side-links-votes">2222</code>
+                                    <span class="side-links-que"> is bla bla bla bla bla bla blabla bla</span>
+                                </a></li>
+                                <li class="side-links"><a href="#">
+                                    <code class="side-links-votes">2222</code>
+                                    <span class="side-links-que"> is bla bla bla bla bla bla blabla bla</span>
+                                </a></li>
+                                <li class="side-links"><a href="#">
+                                    <code class="side-links-votes">2222</code>
+                                    <span class="side-links-que"> is bla bla bla bla bla bla blabla bla</span>
+                                </a></li>
+                                <li class="side-links"><a href="#">
+                                    <code class="side-links-votes">2222</code>
+                                    <span class="side-links-que"> is bla bla bla bla bla bla blabla bla</span>
+                                </a></li>
+                                <li class="side-links"><a href="#">
+                                    <code class="side-links-votes">2222</code>
+                                    <span class="side-links-que"> is bla bla bla bla bla bla blabla bla</span>
+                                </a></li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+                <div id="addAns">
+                    <hr>
+                    <h1>Add your Answers</h1>
+                    <form th:action="@{/questions/{questionId}/addAnswer(questionId=${question.id})}" method="post">
+                        <textarea placeholder="add answer" id="addAnswer" name="answer"></textarea>
+                        <br>
+                        <button type="submit">Add Answer</button>
+                    </form>
+                </div>
+            </section>
+        </div>
+        <table id="histories">
+            <thead>
+            <tr>
+                <td>when</td>
+                <td>what</td>
+                <td>by</td>
+                <td>comment</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Value 1</td>
+                <td>Value 2</td>
+                <td>#-child</td>
+                <td>Value 4Value 4Value 4</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</div>
+<footer class="footer">
+    <div class="footer-inner">
+        <a href="#" aria-label="Stack Overflow"><svg aria-hidden="true" class="native svg-icon iconLogoGlyphMd" width="32" height="37" viewBox="0 0 32 37"><path d="M26 33v-9h4v13H0V24h4v9h22Z" fill="#BCBBBB"></path><path d="m21.5 0-2.7 2 9.9 13.3 2.7-2L21.5 0ZM26 18.4 13.3 7.8l2.1-2.5 12.7 10.6-2.1 2.5ZM9.1 15.2l15 7 1.4-3-15-7-1.4 3Zm14 10.79.68-2.95-16.1-3.35L7 23l16.1 2.99ZM23 30H7v-3h16v3Z" fill="#F48024"></path></svg></a>
+        <div class="footer-column">
+            <h4>STACK OVERFLOW</h4>
+            <ul>
+                <li><a href="#">Questions</a></li>
+                <li><a href="#">Help</a></li>
+            </ul>
+        </div>
+        <div class="footer-column">
+            <h4>PRODUCTS</h4>
+            <ul>
+                <li><a href="#">Team</a></li>
+                <li><a href="#">Advertising</a></li>
+                <li><a href="#">Collectives</a></li>
+                <li><a href="#">Talent</a></li>
+            </ul>
+        </div>
+        <div class="footer-column">
+            <h4>COMPANY</h4>
+            <ul>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Press</a></li>
+                <li><a href="#">Work here</a></li>
+                <li><a href="#">Legal</a></li>
+            </ul>
+        </div>
+        <div class="footer-column">
+            <h4>STACK EXCHANGE NETWORK</h4>
+            <ul>
+                <li><a href="#">Technology</a></li>
+                <li><a href="#">Science</a></li>
+                <li><a href="#">Business</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+</body>

@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timeline for answer to <span th:text="que">(que)</span></title>
+    <link rel="icon" th:href="@{/images/stackoverflowfavicon.png}" type="image/x-icon">
+    <link rel="stylesheet" th:href="@{/css/question.css}">
+</head>
+<body>
+<main id="aboveNavBar"></main>
+<nav id="navBar">
+    <a th:href="@{/home}">
+        <div>
+            <img th:src="@{/images/stackoverflowfavicon.png}" alt="Logo" title="Stack Overflow Logo" />
+            <span title="Stack Overflow Logo">stack<b>overflow</b></span>
+        </div>
+    </a>
+    <ul class="nav-links">
+        <li><a href="https://stackoverflow.co/">About</a></li>
+        <li><a href="https://stackoverflow.co/advertising/">Products</a></li>
+        <li><a href="https://stackoverflow.co/teams/">For Teams</a></li>
+    </ul>
+    <form action="#" id="searchContainer">
+        <img th:src="@{/images/search-26234.png}" />
+        <input type="search" placeholder="Search..."/>
+        <button type="submit"></button>
+    </form>
+    <div class="user-buttons" sec:authorize="isAnonymous()">
+        <a th:href="@{/login}" class="login-button">Log In</a>
+        <a th:href="@{/signup}" class="signup-button">Sign Up</a>
+    </div>
+    <div class="user-buttons" sec:authorize="isAuthenticated()">
+        <a th:href="@{/logout}" class="login-button">Log Out</a>
+    </div>
+</nav>
+<div id="containers">
+    <aside id="left-side-bar">
+        <div id="left-side-bar-container">
+            <nav role="navigation">
+                <ol class="aside-nav-links">
+                    <li>
+                        <a th:href="@{/home}">
+                            <span>Home</span>
+                        </a>
+                    </li>
+                </ol>
+                <ol class="aside-nav-links">
+                    <li>
+                        <span>PUBLIC</span>
+                    </li>
+                    <li class="aside-nav-links-innerList-selected">
+                        <a th:href="@{/}">
+                            <span>Questions</span>
+                        </a>
+                    </li>
+                    <li class="aside-nav-links-innerList">
+                        <a th:href="@{/tags}">
+                            <span>Tags</span>
+                        </a>
+                    </li>
+                    <li class="aside-nav-links-innerList">
+                        <a th:href="@{/users}">
+                            <span>Users</span>
+                        </a>
+                    </li>
+                    <li class="aside-nav-links-innerList">
+                        <a href="https://stackoverflow.com/jobs/companies">
+                            <span>Companies</span>
+                        </a>
+                    </li>
+                </ol>
+            </nav>
+        </div>
+    </aside>
+    <section id="content-box" >
+        <div id="perticularQuetion">
+            <section>
+                <div id="question-container">
+                    <div class="question">
+                        <a th:href="@{/questions/{id}(id=${question.id})}"><p th:text="${question.title}"></p></a>
+                        <div class="signup-button" id="addQueBtn">
+                            <a href="/questions/ask">Ask Questions?</a>
+                        </div>
+                    </div>
+                    <code id="queDetailsContainer">
+                        <span>Asked - <b th:text="${question.createdAt}"></b></span>
+                        <span>Modified - <b th:text="${question.updatedAt}"></b></span>
+                        <span>Viewed - <b th:text="${question.views}"></b></span>
+                    </code>
+                </div>
+                <hr>
+                <div id="queDesciptionContainer">
+                    <div id="queDesciption">
+                        <div class="question-detail-container">
+                            <div class="voting-buttons">
+                                <form th:if="${question.showVoteUp}" th:action="@{/questions/{id}/vote/up(id=${question.id})}" method="post">
+                                    <button class="upvote-button">
+                                        <b>^</b>
+                                    </button>
+                                </form>
+                                <span class="vote-count" th:if="${question.votes != null }" th:text="${question.votes}"></span>
+                                <form th:if="${question.showVoteDown}" th:action="@{/questions/{id}/vote/down(id=${question.id})}" method="post">
+                                    <button class="downvote-button">
+                                        <b>^</b>
+                                    </button>
+                                </form>
+                                <br>
+                                <a href="#">
+                                    <img th:src="@{/images/icons8-history-32.png}">
+                                </a>
+                            </div>
+                            <div class="question-detail">
+                            <p th:text="${question.description}"> </p>
+                            <br>
+                            <form action="#" th:if="${question.tags != null }">
+                                    <span th:each="tag: ${question.tags}">
+                                    <button class="tag" th:text="${tag.name}"></button>
+                                    </span>
+                            </form>
+                            <div id="askedBy">
+                                <code th:text="${question.createdAt}"></code>
+                                <br>
+                                <span>name bla bla</span>
+                            </div>
+                            </div>
+                        </div>
+
+                        <div id="totalAns">
+                            <code th:if="${question.answers != null }"><span th:text="${#sets.size(question.answers)}"></span> answers</code>
+                            <form th:action="@{/questions/{id}(id=${question.id})}">
+                                <select type="" name="sort" onchange="this.form.submit()">
+                                    <option value="votes" th:selected="${question.sortBy == 'votes'}">Highest score(default)</option>
+                                    <option value="updatedAt" th:selected="${question.sortBy == 'updatedAt'}">Date Modified(newest first)</option>
+                                    <option value="createdAt" th:selected="${question.sortBy == 'createdAt'}">Date Created(oldest first)</option>
+                                </select>
+                            </form>
+                        </div>
+                        <div id="answers-container" th:if="${question.answers != null }" th:each="answer : ${question.answers}">
+                            <div id="answers" >
+                                <div class="voting-buttons">
+                                    <form th:if="${not #sets.contains(answer.votedUpByUsers,user)}"
+                                          th:action="@{/questions/{questionId}/answer/{answerId}/voteUp(questionId=${question.id},answerId=${answer.answerId})}"
+                                          method="post">
+                                        <button class="upvote-button">
+                                            <b>^</b>
+                                        </button>
+                                    </form>
+                                    <span class="vote-count" th:if="${answer.votes != null }" th:text="${answer.votes}"></span>
+                                    <form th:if="${not #sets.contains(answer.votedDownByUsers,user)}"
+                                          th:action="@{/questions/{questionId}/answer/{answerId}/voteDown(questionId=${question.id},answerId=${answer.answerId})}"
+                                          method="post">
+                                        <button class="downvote-button">
+                                            <b>^</b>
+                                        </button>
+                                    </form>
+                                    <br>
+                                    <a href="#">
+                                        <img th:src="@{/images/icons8-history-32.png}">
+                                    </a>
+                                </div>
+                                <div class="answer-comment-container">
+                                    <p th:text="${answer.answer}"></p>
+                                    <div id="commentss" th:each="comment : ${answer.comments}">
+                                        <hr>
+                                        <p th:text="${comment.comment}"></p>
+                                        <span>time</span>
+                                        <span>name</span>
+                                    </div>
+                                    <div id="create-comment-container">
+                                        <hr>
+                                        <div id="create-comment" onclick="toggleCommentForm(this)">
+                                            Add a comment
+                                        </div>
+                                        <form th:action="@{/questions/{questionId}/answer/{answerId}/comment(questionId=${question.id}, answerId=${answer.answerId})}" class="create-comment-form" method="post">
+                                            <textarea name="comment" id="comment-box"></textarea>
+                                            <button type="submit">Add comment</button>
+                                        </form>
+                                        <script>
+                                            function toggleCommentForm(button) {
+                                                var commentForm = button.nextElementSibling;
+                                                commentForm.classList.toggle("show");
+                                            }
+                                        </script>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div id="linksContainer">
+                        <header>related Que</header>
+                        <div id="relatedLinks">
+                            <ol>
+                                <li class="side-links"><a href="#">
+                                    <code class="side-links-votes">2222</code>
+                                    <span class="side-links-que"> is bla vlla bla bla bla bla bla bla blabla bla</span>
+                                </a></li>
+                                <li class="side-links"><a href="#">
+                                    <code class="side-links-votes">2222</code>
+                                    <span class="side-links-que"> is bla bla bla bla bla bla blabla bla</span>
+                                </a></li>
+                                <li class="side-links"><a href="#">
+                                    <code class="side-links-votes">2222</code>
+                                    <span class="side-links-que"> is bla bla bla bla bla bla blabla bla</span>
+                                </a></li>
+                                <li class="side-links"><a href="#">
+                                    <code class="side-links-votes">2222</code>
+                                    <span class="side-links-que"> is bla bla bla bla bla bla blabla bla</span>
+                                </a></li>
+                                <li class="side-links"><a href="#">
+                                    <code class="side-links-votes">2222</code>
+                                    <span class="side-links-que"> is bla bla bla bla bla bla blabla bla</span>
+                                </a></li>
+                                <li class="side-links"><a href="#">
+                                    <code class="side-links-votes">2222</code>
+                                    <span class="side-links-que"> is bla bla bla bla bla bla blabla bla</span>
+                                </a></li>
+                                <li class="side-links"><a href="#">
+                                    <code class="side-links-votes">2222</code>
+                                    <span class="side-links-que"> is bla bla bla bla bla bla blabla bla</span>
+                                </a></li>
+                                <li class="side-links"><a href="#">
+                                    <code class="side-links-votes">2222</code>
+                                    <span class="side-links-que"> is bla bla bla bla bla bla blabla bla</span>
+                                </a></li>
+                                <li class="side-links"><a href="#">
+                                    <code class="side-links-votes">2222</code>
+                                    <span class="side-links-que"> is bla bla bla bla bla bla blabla bla</span>
+                                </a></li>
+                                <li class="side-links"><a href="#">
+                                    <code class="side-links-votes">2222</code>
+                                    <span class="side-links-que"> is bla bla bla bla bla bla blabla bla</span>
+                                </a></li>
+                                <li class="side-links"><a href="#">
+                                    <code class="side-links-votes">2222</code>
+                                    <span class="side-links-que"> is bla bla bla bla bla bla blabla bla</span>
+                                </a></li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+                <div id="addAns">
+                    <hr>
+                    <h1>Add your Answers</h1>
+                    <form th:action="@{/questions/{questionId}/addAnswer(questionId=${question.id})}" method="post">
+                        <textarea placeholder="add answer" id="addAnswer" name="answer"></textarea>
+                        <br>
+                        <button type="submit">Add Answer</button>
+                    </form>
+                </div>
+            </section>
+        </div>
+        <br><br>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-column">
+                <h4>STACK OVERFLOW</h4>
+                <ul>
+                    <li><a th:href="@{/}">Questions</a></li>
+                    <li><a href="https://stackoverflow.com/help">Help</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>PRODUCTS</h4>
+                <ul>
+                    <li><a href="https://stackoverflow.co/teams/">Team</a></li>
+                    <li><a href="https://stackoverflow.co/advertising/">Advertising</a></li>
+                    <li><a href="https://stackoverflow.co/collectives/">Collectives</a></li>
+                    <li><a href="https://stackoverflow.co/talent/">Talent</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>COMPANY</h4>
+                <ul>
+                    <li><a href="https://stackoverflow.co/">About</a></li>
+                    <li><a href="https://stackoverflow.co/company/press">Press</a></li>
+                    <li><a href="https://stackoverflow.co/company/work-here">Work here</a></li>
+                    <li><a href="https://stackoverflow.com/legal/terms-of-service">Legal</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>STACK EXCHANGE NETWORK</h4>
+                <ul>
+                    <li><a href="https://stackexchange.com/sites#technology">Technology</a></li>
+                    <li><a href="https://stackexchange.com/sites#science">Science</a></li>
+                    <li><a href="https://stackexchange.com/sites#business">Business</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+</div>
+</body>
+</html>
