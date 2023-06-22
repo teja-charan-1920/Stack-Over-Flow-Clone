@@ -1,10 +1,8 @@
 package com.majorproject.StackOverflowClone.service;
 
 import com.majorproject.StackOverflowClone.dto.PageDto;
-import com.majorproject.StackOverflowClone.model.Question;
 import com.majorproject.StackOverflowClone.model.Tag;
 import com.majorproject.StackOverflowClone.repository.TagRepository;
-import com.majorproject.StackOverflowClone.specification.QuestionSpecification;
 import com.majorproject.StackOverflowClone.specification.TagSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,8 +21,9 @@ public class TagService {
     private TagSpecification tagSpecification = new TagSpecification();
     @Autowired
     TagRepository tagRepository;
+
     public List<Tag> getAllTags() {
-       return tagRepository.findAll();
+        return tagRepository.findAll();
     }
 
 
@@ -40,10 +39,10 @@ public class TagService {
     }
 
     public Object getTags(String search, int page, String sort) {
-        Pageable pageable = PageRequest.of(page - 1, PAGESIZE, Sort.by(Sort.Direction.DESC,sort));
+        Pageable pageable = PageRequest.of(page - 1, PAGESIZE, Sort.by(Sort.Direction.DESC, sort));
         Specification<Tag> specification = Specification.where(null);
 
-        if(search != null) {
+        if (search != null) {
             specification = tagSpecification.searchByKeyword(search);
         }
         Page<Tag> tagPage = tagRepository.findAll(specification, pageable);
@@ -54,6 +53,6 @@ public class TagService {
         pageDto.setPage(page);
         pageDto.setSearch(search);
         pageDto.setSortBy(sort);
-        return  pageDto;
+        return pageDto;
     }
 }

@@ -49,6 +49,6 @@ public class Answer {
     )
     private Set<User> votedDownByUsers;
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "answer_id",referencedColumnName = "answer_id")
+    @JoinColumn(name = "answer_id", referencedColumnName = "answer_id")
     private Set<Comment> comments;
 }

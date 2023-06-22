@@ -46,47 +46,12 @@ public class SecurityConfig {
                                         "/questions/{questionId}/answer/{answerId}/voteDown",
                                         "/questions/{questionId}/answer/{answerId}/voteUp").authenticated()
                                 .anyRequest().permitAll())
-
-
-
-                .oauth2Login(oauth2 -> oauth2
-
-                        .successHandler((request, response, authentication) -> {
-                            // Custom logic after successful OAuth2 login
-                            // For example, redirecting to a specific page
-                            response.sendRedirect("/home");
-                        })
-                        .permitAll()
-                )
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessHandler((request, response, authentication) -> {
-                            // Custom logic after successful logout
-                            // For example, redirecting to the login page
-                            response.sendRedirect("/login");
-                        })
-                        .permitAll()
-                )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//                .oauth2Login(oauth2-> oauth2
+//                        .loginPage("/login")
+//                        .loginProcessingUrl("/oauth2/authorization/google")
+//                        .permitAll())
                 .formLogin(form ->
                         form
-
                                 .loginPage("/login")
                                 .loginProcessingUrl("/authenticateTheUser")
                                 .permitAll())
@@ -94,9 +59,8 @@ public class SecurityConfig {
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login")
                         .permitAll())
+//                .oauth2Login(withDefaults())
                 .csrf(AbstractHttpConfigurer::disable);
         return httpSecurity.build();
     }
-
-
 }

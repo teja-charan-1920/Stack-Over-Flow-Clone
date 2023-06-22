@@ -11,13 +11,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class UserInfoUserDetails implements UserDetails {
-    private long id;
     private String username;
     private String email;
     private String password;
     private List<GrantedAuthority> authorities;
+
     public UserInfoUserDetails(User user) {
-        this.id = user.getUserId();
         this.username = user.getUsername();
         this.email = user.getEmail();
         this.password = user.getPassword();

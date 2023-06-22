@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name="tags")
+@Table(name = "tags")
 @Getter
 @Setter
 public class Tag {

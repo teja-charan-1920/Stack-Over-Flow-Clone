@@ -210,6 +210,7 @@ button {
 }
 
 
+
     </style>
 </head>
 <body>
@@ -227,6 +228,7 @@ button {
                     popup.style.display = "none";
                 }
             }
+
         </script>
         <a th:href="@{/home}">
             <div>
@@ -245,7 +247,8 @@ button {
             <button type="submit"></button>
         </form>
         <div id="left-side-bar-btn">
-            <button onclick="leftsidebar()" ><img th:src="@{/images/menu-button-of-three-horizontal-lines.png}" alt="Logo" title="logo"></button>
+            <button onclick="leftsidebar()"><img th:src="@{/images/menu-button-of-three-horizontal-lines.png}"
+                                                 alt="Logo" title="logo"></button>
         </div>
     </nav>
 
@@ -307,16 +310,11 @@ button {
             <div class="forgot-password">
                 <a href="#">Forgot password?</a>
             </div>
+            <form th:action="@{/oauth2/authorization/google}" method="POST">
+                <button type="submit">Google</button>
+            </form>
         </div>
     </div>
-
-
-
-
-
-
-
-
 </main>
 </body>
 

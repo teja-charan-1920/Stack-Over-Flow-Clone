@@ -24,6 +24,7 @@ public class QuestionDto {
     private String sortBy;
     private Set<Question> relatedQue;
     private String totalTags;
+    private String username;
     private boolean showVoteUp = true;
     private boolean showVoteDown = true;
 }

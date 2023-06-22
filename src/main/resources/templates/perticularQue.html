@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Timeline for answer to <span th:text="que">(que)</span></title>
+    <title>Question</title>
     <link rel="icon" th:href="@{/images/stackoverflowfavicon.png}" type="image/x-icon">
     <link rel="stylesheet" th:href="@{/css/question.css}">
+    <script th:src="@{/tinymce/tinymce.min.js}"></script>
 </head>
 <body>
 <main id="aboveNavBar"></main>
 <nav id="navBar">
     <a th:href="@{/home}">
         <div>
-            <img th:src="@{/images/stackoverflowfavicon.png}" alt="Logo" title="Stack Overflow Logo" />
+            <img th:src="@{/images/stackoverflowfavicon.png}" alt="Logo" title="Stack Overflow Logo"/>
             <span title="Stack Overflow Logo">stack<b>overflow</b></span>
         </div>
     </a>
@@ -22,7 +23,7 @@
         <li><a href="https://stackoverflow.co/teams/">For Teams</a></li>
     </ul>
     <form action="#" id="searchContainer">
-        <img th:src="@{/images/search-26234.png}" />
+        <img th:src="@{/images/search-26234.png}"/>
         <input type="search" placeholder="Search..."/>
         <button type="submit"></button>
     </form>
@@ -73,7 +74,7 @@
             </nav>
         </div>
     </aside>
-    <section id="content-box" >
+    <section id="content-box">
         <div id="perticularQuetion">
             <section>
                 <div id="question-container">
@@ -84,8 +85,9 @@
                         </div>
                     </div>
                     <code id="queDetailsContainer">
-                        <span>Asked - <b th:text="${question.createdAt}"></b></span>
-                        <span>Modified - <b th:text="${question.updatedAt}"></b></span>
+                        <span>Asked - <b th:text="${#temporals.format(question.createdAt, 'MMM dd, yyyy')}"></b></span>
+                        <span>Modified - <b
+                                th:text="${#temporals.format(question.updatedAt, 'MMM dd, yyyy')}"></b></span>
                         <span>Viewed - <b th:text="${question.views}"></b></span>
                     </code>
                 </div>
@@ -94,13 +96,16 @@
                     <div id="queDesciption">
                         <div class="question-detail-container">
                             <div class="voting-buttons">
-                                <form th:if="${question.showVoteUp}" th:action="@{/questions/{id}/vote/up(id=${question.id})}" method="post">
+                                <form th:if="${question.showVoteUp}"
+                                      th:action="@{/questions/{id}/vote/up(id=${question.id})}" method="post">
                                     <button class="upvote-button">
                                         <b>^</b>
                                     </button>
                                 </form>
-                                <span class="vote-count" th:if="${question.votes != null }" th:text="${question.votes}"></span>
-                                <form th:if="${question.showVoteDown}" th:action="@{/questions/{id}/vote/down(id=${question.id})}" method="post">
+                                <span class="vote-count" th:if="${question.votes != null }"
+                                      th:text="${question.votes}"></span>
+                                <form th:if="${question.showVoteDown}"
+                                      th:action="@{/questions/{id}/vote/down(id=${question.id})}" method="post">
                                     <button class="downvote-button">
                                         <b>^</b>
                                     </button>
@@ -111,33 +116,41 @@
                                 </a>
                             </div>
                             <div class="question-detail">
-                            <p th:text="${question.description}"> </p>
-                            <br>
-                            <form action="#" th:if="${question.tags != null }">
-                                    <span th:each="tag: ${question.tags}">
-                                    <button class="tag" th:text="${tag.name}"></button>
-                                    </span>
-                            </form>
-                            <div id="askedBy">
-                                <code th:text="${question.createdAt}"></code>
+                                <p th:text="${question.description}"></p>
                                 <br>
-                                <span>name bla bla</span>
-                            </div>
+                                <div class="tag-container" th:each="tag:${question.tags}">
+                                    <a th:href="@{/questions/tagged/{tag}(tag = ${tag.name})}">
+                                        <span th:text="${tag.name}"></span>
+                                    </a>
+                                </div>
+                                <div id="askedBy">
+                                    <code th:text="${#temporals.format(question.createdAt,'MMM dd, yyyy')}"></code>
+                                    <br>
+                                    <span th:text="${question.username}"></span>
+                                </div>
                             </div>
                         </div>
 
                         <div id="totalAns">
-                            <code th:if="${question.answers != null }"><span th:text="${#sets.size(question.answers)}"></span> answers</code>
+                            <code th:if="${question.answers != null }"><span
+                                    th:text="${#sets.size(question.answers)}"></span> answers</code>
                             <form th:action="@{/questions/{id}(id=${question.id})}">
                                 <select type="" name="sort" onchange="this.form.submit()">
-                                    <option value="votes" th:selected="${question.sortBy == 'votes'}">Highest score(default)</option>
-                                    <option value="updatedAt" th:selected="${question.sortBy == 'updatedAt'}">Date Modified(newest first)</option>
-                                    <option value="createdAt" th:selected="${question.sortBy == 'createdAt'}">Date Created(oldest first)</option>
+                                    <option value="votes" th:selected="${question.sortBy == 'votes'}">Highest
+                                        score(default)
+                                    </option>
+                                    <option value="updatedAt" th:selected="${question.sortBy == 'updatedAt'}">Date
+                                        Modified(newest first)
+                                    </option>
+                                    <option value="createdAt" th:selected="${question.sortBy == 'createdAt'}">Date
+                                        Created(oldest first)
+                                    </option>
                                 </select>
                             </form>
                         </div>
-                        <div id="answers-container" th:if="${question.answers != null }" th:each="answer : ${question.answers}">
-                            <div id="answers" >
+                        <div id="answers-container" th:if="${question.answers != null }"
+                             th:each="answer : ${question.answers}">
+                            <div id="answers">
                                 <div class="voting-buttons">
                                     <form th:if="${not #sets.contains(answer.votedUpByUsers,user)}"
                                           th:action="@{/questions/{questionId}/answer/{answerId}/voteUp(questionId=${question.id},answerId=${answer.answerId})}"
@@ -146,7 +159,8 @@
                                             <b>^</b>
                                         </button>
                                     </form>
-                                    <span class="vote-count" th:if="${answer.votes != null }" th:text="${answer.votes}"></span>
+                                    <span class="vote-count" th:if="${answer.votes != null }"
+                                          th:text="${answer.votes}"></span>
                                     <form th:if="${not #sets.contains(answer.votedDownByUsers,user)}"
                                           th:action="@{/questions/{questionId}/answer/{answerId}/voteDown(questionId=${question.id},answerId=${answer.answerId})}"
                                           method="post">
@@ -160,7 +174,7 @@
                                     </a>
                                 </div>
                                 <div class="answer-comment-container">
-                                    <p th:text="${answer.answer}"></p>
+                                    <p th:utext="${answer.answer}"></p>
                                     <div id="commentss" th:each="comment : ${answer.comments}">
                                         <hr>
                                         <p th:text="${comment.comment}"></p>
@@ -172,8 +186,9 @@
                                         <div id="create-comment" onclick="toggleCommentForm(this)">
                                             Add a comment
                                         </div>
-                                        <form th:action="@{/questions/{questionId}/answer/{answerId}/comment(questionId=${question.id}, answerId=${answer.answerId})}" class="create-comment-form" method="post">
-                                            <textarea name="comment" id="comment-box"></textarea>
+                                        <form th:action="@{/questions/{questionId}/answer/{answerId}/comment(questionId=${question.id}, answerId=${answer.answerId})}"
+                                              class="create-comment-form" method="post">
+                                            <textarea name="comment" id="comment-box" required></textarea>
                                             <button type="submit">Add comment</button>
                                         </form>
                                         <script>
@@ -181,6 +196,7 @@
                                                 var commentForm = button.nextElementSibling;
                                                 commentForm.classList.toggle("show");
                                             }
+
                                         </script>
                                     </div>
                                 </div>
@@ -189,52 +205,12 @@
                     </div>
                     <hr>
                     <div id="linksContainer">
-                        <header>related Que</header>
-                        <div id="relatedLinks">
+                        <header>Related Questions</header>
+                        <div id="relatedLinks" th:each="question:${question.relatedQue}">
                             <ol>
-                                <li class="side-links"><a href="#">
-                                    <code class="side-links-votes">2222</code>
-                                    <span class="side-links-que"> is bla vlla bla bla bla bla bla bla blabla bla</span>
-                                </a></li>
-                                <li class="side-links"><a href="#">
-                                    <code class="side-links-votes">2222</code>
-                                    <span class="side-links-que"> is bla bla bla bla bla bla blabla bla</span>
-                                </a></li>
-                                <li class="side-links"><a href="#">
-                                    <code class="side-links-votes">2222</code>
-                                    <span class="side-links-que"> is bla bla bla bla bla bla blabla bla</span>
-                                </a></li>
-                                <li class="side-links"><a href="#">
-                                    <code class="side-links-votes">2222</code>
-                                    <span class="side-links-que"> is bla bla bla bla bla bla blabla bla</span>
-                                </a></li>
-                                <li class="side-links"><a href="#">
-                                    <code class="side-links-votes">2222</code>
-                                    <span class="side-links-que"> is bla bla bla bla bla bla blabla bla</span>
-                                </a></li>
-                                <li class="side-links"><a href="#">
-                                    <code class="side-links-votes">2222</code>
-                                    <span class="side-links-que"> is bla bla bla bla bla bla blabla bla</span>
-                                </a></li>
-                                <li class="side-links"><a href="#">
-                                    <code class="side-links-votes">2222</code>
-                                    <span class="side-links-que"> is bla bla bla bla bla bla blabla bla</span>
-                                </a></li>
-                                <li class="side-links"><a href="#">
-                                    <code class="side-links-votes">2222</code>
-                                    <span class="side-links-que"> is bla bla bla bla bla bla blabla bla</span>
-                                </a></li>
-                                <li class="side-links"><a href="#">
-                                    <code class="side-links-votes">2222</code>
-                                    <span class="side-links-que"> is bla bla bla bla bla bla blabla bla</span>
-                                </a></li>
-                                <li class="side-links"><a href="#">
-                                    <code class="side-links-votes">2222</code>
-                                    <span class="side-links-que"> is bla bla bla bla bla bla blabla bla</span>
-                                </a></li>
-                                <li class="side-links"><a href="#">
-                                    <code class="side-links-votes">2222</code>
-                                    <span class="side-links-que"> is bla bla bla bla bla bla blabla bla</span>
+                                <li class="side-links"><a th:href="@{/questions/{id}(id=${question.questionId})}">
+                                    <code class="side-links-votes" th:text="${question.votes}"></code>
+                                    <span class="side-links-que" th:text="${question.title}"></span>
                                 </a></li>
                             </ol>
                         </div>
@@ -253,7 +229,6 @@
         </div>
         <br><br>
     </section>
-
     <footer class="footer">
         <div class="footer-inner">
             <div class="footer-column">
@@ -292,5 +267,20 @@
         </div>
     </footer>
 </div>
+<script>
+        tinymce.init({
+            selector: 'textarea#addAnswer',
+    width: 800,
+    height: 300,
+    plugins: [
+        'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'code', 'table',
+        'preview', 'anchor', 'pagebreak', 'searchreplace', 'wordcount', 'visualblocks',
+        'fullscreen', 'insertdatetime', 'media', 'emoticons', 'codesample'
+    ],
+    toolbar: 'undo redo | styleselect | bold italic underline | alignleft alignright aligncenter alignjustify | bullist numlist outdent indent | print preview fullscreen | forecolor backcolor emoticons',
+    menubar: 'favs file edit view format tools table',
+    content_style: 'body { font-family: Helvetica, Arial, sans-serif; font-size: 16px; }'
+});
+    </script>
 </body>
 </html>

@@ -17,4 +17,5 @@ public class PageDto {
     private int pageSize;
     private List<Question> questions;
     private List<Tag> tags;
+    private int allQuestions;
 }

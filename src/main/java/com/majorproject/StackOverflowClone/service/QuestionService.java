@@ -17,10 +17,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import static java.lang.Boolean.FALSE;
@@ -37,30 +40,29 @@ public class QuestionService {
     UserRepository userRepository;
 
     private AnswerSpecification answerSpecification = new AnswerSpecification();
-    private QuestionSpecification questionSpecification= new QuestionSpecification();
+    private QuestionSpecification questionSpecification = new QuestionSpecification();
 
     public Question getQuestionById(Long id) {
         return questionRepository.findById(id).orElse(null);
     }
 
     public void updateQuestionVotes(Question previousQuestion) {
-        previousQuestion.setVotes((long) (previousQuestion.getVotedUpByUsers().size()-previousQuestion.getVotedDownByUsers().size()));
+        previousQuestion.setVotes((long) (previousQuestion.getVotedUpByUsers().size() - previousQuestion.getVotedDownByUsers().size()));
         questionRepository.save(previousQuestion);
     }
 
     public Long addQuestion(QuestionDto questionDto) {
-        if(questionDto.getTotalTags() == null) {
+        if (questionDto.getTotalTags() == null) {
             return questionRepository.save(convertDtoToDao(questionDto)).getQuestionId();
         }
         Set<Tag> setOfTags = saveTags(questionDto.getTotalTags().split(","));
         Question question = convertDtoToDao(questionDto);
 
         for (Tag tag : setOfTags) {
-                tag.getQuestions().add(question);
-                tagRepository.save(tag);
-            }
+            tag.getQuestions().add(question);
+            tagRepository.save(tag);
+        }
         question.setTags(setOfTags);
-        System.out.println(1);
         return questionRepository.save(question).getQuestionId();
     }
 
@@ -69,34 +71,33 @@ public class QuestionService {
 
         question.setTitle(questionDto.getTitle());
         question.setDescription(questionDto.getDescription());
-        question.setUser(userRepository.findById(1l).get());
+        question.setUser(getUser());
         return question;
     }
 
     public QuestionDto getQuestion(Long id, String sortBy) {
         Question question = getQuestionById(id);
-        question.setViews(question.getViews()+1);
-        questionRepository.save(question);
-
-        QuestionDto questionDto =  convertDaoToDto(question);
-        questionDto.setAnswers(new HashSet<>(answerRepository.findAll(answerSpecification.findByQuestionIdAndSortByVotes(id,sortBy))));
+        QuestionDto questionDto = convertDaoToDto(question);
+        questionDto.setAnswers(new HashSet<>(answerRepository.findAll(answerSpecification.findByQuestionIdAndSortByVotes(id, sortBy))));
         questionDto.setSortBy(sortBy);
-        return  setVotedUpAndDown(questionDto);
+        questionDto.setRelatedQue(getRelatedQuestions(question));
+        questionDto.setUsername(question.getUser().getUsername());
+        return setVotedUpAndDown(questionDto);
     }
 
-    public QuestionDto setVotedUpAndDown(QuestionDto questionDto){
-        User user = userRepository.findById(1l).get();
+    public QuestionDto setVotedUpAndDown(QuestionDto questionDto) {
+        User user = getUser();
         Question question = getQuestionById(questionDto.getId());
 
         if (question.getVotedUpByUsers().contains(user)) {
             questionDto.setShowVoteUp(FALSE);
-        } else if(question.getVotedDownByUsers().contains(user)){
+        } else if (question.getVotedDownByUsers().contains(user)) {
             questionDto.setShowVoteDown(FALSE);
         }
         return questionDto;
     }
 
-    public QuestionDto convertDaoToDto(Question question){
+    public QuestionDto convertDaoToDto(Question question) {
         QuestionDto questionDto = new QuestionDto();
 
         questionDto.setId(question.getQuestionId());
@@ -125,11 +126,11 @@ public class QuestionService {
         return tags;
     }
 
-    public PageDto getAllQuestions(String search, int page, int pageSize,String sort) {
-        Pageable pageable = PageRequest.of(page - 1, pageSize,Sort.by(Sort.Direction.DESC,sort));
+    public PageDto getAllQuestions(String search, int page, int pageSize, String sort) {
+        Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(Sort.Direction.DESC, sort));
         Specification<Question> specification = Specification.where(null);
 
-        if(search != null) {
+        if (search != null) {
             specification = questionSpecification.filterPostsOnKeyword(search);
         }
         Page<Question> questionPage = questionRepository.findAll(specification, pageable);
@@ -143,11 +144,12 @@ public class QuestionService {
         pageDto.setTags(tagRepository.findAll());
         pageDto.setSortBy(sort);
         pageDto.setSearch(search);
+        pageDto.setAllQuestions(questionRepository.findAll().size());
         return pageDto;
     }
 
     public void votedUp(Long id) {
-        User user = userRepository.findById(1L).orElse(null);
+        User user = getUser();
         Question question = getQuestionById(id);
         User questionOwner = question.getUser();
 
@@ -164,7 +166,7 @@ public class QuestionService {
     }
 
     public void votedDown(Long id) {
-        User user = userRepository.findById(1L).orElse(null);
+        User user = getUser();
         Question question = getQuestionById(id);
         User questionOwner = question.getUser();
 
@@ -180,12 +182,49 @@ public class QuestionService {
         updateQuestionVotes(question);
     }
 
-    public PageDto getQuestionsForHomePage() {
+    public PageDto getQuestionsForHomePage(String sort) {
         PageDto pageDto = new PageDto();
-        Sort sort = Sort.by(Sort.Direction.DESC, "updatedAt");
-        Specification<Question> specification = questionSpecification.getQuestionsInLast12Hours();
-        pageDto.setQuestions(questionRepository.findAll(specification, sort));
         pageDto.setTags(tagRepository.findAll());
+        Pageable pageable = PageRequest.of(0, 25, Sort.by(Sort.Direction.ASC, "createdAt"));
+        if (sort.equals("week")) {
+            Specification<Question> specification = questionSpecification.getQuestionsInLastDays(7);
+            pageDto.setQuestions(questionRepository.findAll(specification, pageable).getContent());
+            return pageDto;
+        } else if (sort.equals("month")) {
+            Specification<Question> specification = questionSpecification.getQuestionsInLastDays(30);
+            pageDto.setQuestions(questionRepository.findAll(specification, pageable).getContent());
+            return pageDto;
+        }
+        pageable = PageRequest.of(0, 25, Sort.by(Sort.Direction.DESC, "votes"));
+        Specification<Question> specification = questionSpecification.getQuestionsInLastDays(15);
+        pageDto.setQuestions(questionRepository.findAll(specification, pageable).getContent());
         return pageDto;
+    }
+
+    public void setViewForQuestion(Long id) {
+        Question question = getQuestionById(id);
+        question.setViews(question.getViews() + 1);
+        questionRepository.save(question);
+    }
+
+    public Set<Question> getRelatedQuestions(Question question) {
+        Set<Question> related = new HashSet<>();
+
+        for (Tag tag : question.getTags()) {
+            related.addAll(tag.getQuestions());
+        }
+        related.remove(question);
+        return related;
+    }
+
+    public User getUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {
+            return null;
+        }
+        Object principal = authentication.getPrincipal();
+        UserDetails userDetails = (UserDetails) principal;
+        String username = userDetails.getUsername();
+        return userRepository.findByEmail(username).orElse(null);
     }
 }

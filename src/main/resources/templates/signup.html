@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-  <style>
+    <style>
      a {
             text-decoration: none;
         }
@@ -226,9 +226,9 @@ button {
 <body>
 <main id="aboveNavBar">
 
-  <nav id="navBar">
+    <nav id="navBar">
 
-    <script>
+        <script>
             function leftsidebar() {
                 var popup = document.getElementById("left-side-bar");
                 if(popup.style.display === "none")
@@ -239,100 +239,100 @@ button {
                 }
             }
         </script>
-    <a th:href="@{/home}">
-      <div>
-        <img th:src="@{/images/stackoverflowfavicon.png}" alt="Logo" title="logo"/>
-        <span>stack<b>overflow</b></span>
-      </div>
-    </a>
-    <ul class="nav-links">
-      <li><a href="https://stackoverflow.co/">About</a></li>
-      <li><a href="https://stackoverflow.co/advertising/">Products</a></li>
-      <li><a href="https://stackoverflow.co/teams/">For Teams</a></li>
-    </ul>
-    <form action="#" id="searchContainer">
-      <img th:src="@{/images/search-26234.png}" alt="Logo" title="logo"/>
-      <input type="search" placeholder="Search..."/>
-      <button type="submit"></button>
-    </form>
-    <div id="left-side-bar-btn">
-      <button onclick="leftsidebar()" ><img th:src="@{/images/menu-button-of-three-horizontal-lines.png}" alt="Logo" title="logo"></button>
-    </div>
-  </nav>
+        <a th:href="@{/home}">
+            <div>
+                <img th:src="@{/images/stackoverflowfavicon.png}" alt="Logo" title="logo"/>
+                <span>stack<b>overflow</b></span>
+            </div>
+        </a>
+        <ul class="nav-links">
+            <li><a href="https://stackoverflow.co/">About</a></li>
+            <li><a href="https://stackoverflow.co/advertising/">Products</a></li>
+            <li><a href="https://stackoverflow.co/teams/">For Teams</a></li>
+        </ul>
+        <form action="#" id="searchContainer">
+            <img th:src="@{/images/search-26234.png}" alt="Logo" title="logo"/>
+            <input type="search" placeholder="Search..."/>
+            <button type="submit"></button>
+        </form>
+        <div id="left-side-bar-btn">
+            <button onclick="leftsidebar()" ><img th:src="@{/images/menu-button-of-three-horizontal-lines.png}" alt="Logo" title="logo"></button>
+        </div>
+    </nav>
 
-  <div id="containers">
-    <aside id="left-side-bar">
-      <div id="left-side-bar-container">
-        <nav role="navigation">
-          <ol id="aside-nav-links">
-            <li>
-              <a th:href="@{/home}">
-                <span>Home</span>
-              </a>
-            </li>
-          </ol>
-          <ol id="aside-nav-links">
-            <li>
-              <span>PUBLIC</span>
-            </li>
-            <li id="aside-nav-links-innerList">
-              <a th:href="@{/}">
-                <span>Questions</span>
-              </a>
-            </li>
-            <li id="aside-nav-links-innerList">
-              <a th:href="@{/tags}">
-                <span>Tags</span>
-              </a>
-            </li>
-            <li id="aside-nav-links-innerList">
-              <a th:href="@{/users}">
-                <span>Users</span>
-              </a>
-            </li>
-            <li id="aside-nav-links-innerList">
-              <a href="https://stackoverflow.com/jobs/companies">
-                <span>Companies</span>
-              </a>
-            </li>
-          </ol>
-        </nav>
-      </div>
-    </aside>
-  </div>
+    <div id="containers">
+        <aside id="left-side-bar">
+            <div id="left-side-bar-container">
+                <nav role="navigation">
+                    <ol id="aside-nav-links">
+                        <li>
+                            <a th:href="@{/home}">
+                                <span>Home</span>
+                            </a>
+                        </li>
+                    </ol>
+                    <ol id="aside-nav-links">
+                        <li>
+                            <span>PUBLIC</span>
+                        </li>
+                        <li id="aside-nav-links-innerList">
+                            <a th:href="@{/}">
+                                <span>Questions</span>
+                            </a>
+                        </li>
+                        <li id="aside-nav-links-innerList">
+                            <a th:href="@{/tags}">
+                                <span>Tags</span>
+                            </a>
+                        </li>
+                        <li id="aside-nav-links-innerList">
+                            <a th:href="@{/users}">
+                                <span>Users</span>
+                            </a>
+                        </li>
+                        <li id="aside-nav-links-innerList">
+                            <a href="https://stackoverflow.com/jobs/companies">
+                                <span>Companies</span>
+                            </a>
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </aside>
+    </div>
 
-  <div class="container">
-    <div class="left-section">
-      <h1>Join the Stack Overflow community</h1>
-      <ul>
-        <li>Get unstuck — ask a question</li>
-        <li>Unlock new privileges like voting and commenting</li>
-        <li>Save your favorite questions, answers, watch tags, and more</li>
-        <li>Earn reputation and badges</li>
-        <li>Collaborate and share knowledge with a private group for FREE</li>
-        <li>Get Stack Overflow for Teams free for up to 50 users</li>
-      </ul>
-      <p>Already have an account? <a href="#">Log in</a></p>
+    <div class="container">
+        <div class="left-section">
+            <h1>Join the Stack Overflow community</h1>
+            <ul>
+                <li>Get unstuck — ask a question</li>
+                <li>Unlock new privileges like voting and commenting</li>
+                <li>Save your favorite questions, answers, watch tags, and more</li>
+                <li>Earn reputation and badges</li>
+                <li>Collaborate and share knowledge with a private group for FREE</li>
+                <li>Get Stack Overflow for Teams free for up to 50 users</li>
+            </ul>
+            <p>Already have an account? <a href="#">Log in</a></p>
+        </div>
+        <div class="right-section">
+            <h2>Sign Up</h2>
+            <form th:action="@{/signup}" method="POST">
+                <div class="form-group">
+                    <label for="displayName">Display name:</label>
+                    <input type="text" id="displayName" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password"  required>
+                    <!--          pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$" title="Passwords must contain at least eight characters, including at least 1 letter and 1 number."-->
+                </div>
+                <button type="submit">Sign Up</button>
+            </form>
+        </div>
     </div>
-    <div class="right-section">
-      <h2>Sign Up</h2>
-      <form th:action="@{/signup}" method="POST">
-        <div class="form-group">
-          <label for="displayName">Display name:</label>
-          <input type="text" id="displayName" name="username" required>
-        </div>
-        <div class="form-group">
-          <label for="email">Email:</label>
-          <input type="email" id="email" name="email" required>
-        </div>
-        <div class="form-group">
-          <label for="password">Password:</label>
-          <input type="password" id="password" name="password"  required>
-<!--          pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$" title="Passwords must contain at least eight characters, including at least 1 letter and 1 number."-->
-        </div>
-        <button type="submit">Sign Up</button>
-      </form>
-    </div>
-  </div>
 </body>
 </html>

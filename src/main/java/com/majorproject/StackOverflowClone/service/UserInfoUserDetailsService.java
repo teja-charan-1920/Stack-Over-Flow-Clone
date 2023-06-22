@@ -14,10 +14,11 @@ import java.util.Optional;
 public class UserInfoUserDetailsService implements UserDetailsService {
     @Autowired
     private UserRepository userRepo;
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<User> user = userRepo.findByEmail(email);
         return user.map(UserInfoUserDetails::new)
-                .orElseThrow(()->new UsernameNotFoundException("User not found"+email));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found" + email));
     }
 }

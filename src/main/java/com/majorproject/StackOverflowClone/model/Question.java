@@ -18,12 +18,12 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "question_id")
     private Long questionId;
-    @Column(unique = true,nullable = false,columnDefinition = "TEXT")
+    @Column(unique = true, nullable = false, columnDefinition = "TEXT")
     private String title;
     @Column(columnDefinition = "TEXT")
     private String description;
     private Long views = 0l;
-    private Long votes= 0l;
+    private Long votes = 0l;
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp
@@ -31,7 +31,7 @@ public class Question {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-    @OneToMany(cascade = CascadeType.ALL,mappedBy = "question")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "question")
     private Set<Answer> answers;
     @ManyToMany
     @JoinTable(

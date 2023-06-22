@@ -1,7 +1,6 @@
 package com.majorproject.StackOverflowClone.controller;
 
 import com.majorproject.StackOverflowClone.dto.QuestionDto;
-import com.majorproject.StackOverflowClone.model.User;
 import com.majorproject.StackOverflowClone.service.QuestionService;
 import com.majorproject.StackOverflowClone.service.TagService;
 import com.majorproject.StackOverflowClone.service.UserService;
@@ -27,8 +26,9 @@ public class QuestionController {
     }
 
     @GetMapping("/home")
-    public String homePage(Model model){
-        model.addAttribute("questions",questionService.getQuestionsForHomePage());
+    public String homePage(@RequestParam(name = "sort", defaultValue = "votes", required = false) String sort,
+                           Model model) {
+        model.addAttribute("questions", questionService.getQuestionsForHomePage(sort));
         return "home";
     }
 
@@ -53,19 +53,24 @@ public class QuestionController {
     public String getQuestion(@RequestParam(name = "sort", defaultValue = "votes", required = false) String sortBy,
                               @PathVariable Long id,
                               Model model) {
-        User user = userService.getUserById(1L);
-        model.addAttribute("user",userService.getUserById(1l));
         model.addAttribute("question", questionService.getQuestion(id, sortBy));
         return "perticularQue";
     }
 
     @GetMapping("/")
-    public String homePage(@RequestParam(name = "search", required = false) String search,
-                           @RequestParam(name = "page", required = false, defaultValue = "1") int page,
-                           @RequestParam(name = "pagesize", required = false, defaultValue = "15") int pageSize,
-                           @RequestParam(name = "sort", defaultValue = "votes", required = false) String sort,
-                           Model model) {
+    public String questionsHomePage(@RequestParam(name = "search", required = false) String search,
+                                    @RequestParam(name = "page", required = false, defaultValue = "1") int page,
+                                    @RequestParam(name = "pagesize", required = false, defaultValue = "15") int pageSize,
+                                    @RequestParam(name = "sort", defaultValue = "votes", required = false) String sort,
+                                    Model model) {
         model.addAttribute("questions", questionService.getAllQuestions(search, page, pageSize, sort));
-            return "allQue";
-        }
+        return "allQue";
+    }
+
+    @GetMapping("/questionView/{id}")
+    public String addView(@PathVariable Long id) {
+        questionService.setViewForQuestion(id);
+        return "redirect:/questions/" + id;
+    }
 }
+

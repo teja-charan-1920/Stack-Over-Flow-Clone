@@ -9,8 +9,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TagRepository extends JpaRepository<Tag,Long>, JpaSpecificationExecutor<Tag> {
+public interface TagRepository extends JpaRepository<Tag, Long>, JpaSpecificationExecutor<Tag> {
     Tag findByName(String trimmedTag);
+
     @Query("DELETE FROM Tag t WHERE t NOT IN (SELECT DISTINCT tag FROM Question q JOIN q.tags tag)")
     @Modifying
     @Transactional
