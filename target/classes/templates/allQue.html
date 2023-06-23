@@ -6,6 +6,10 @@
     <title>All Questions</title>
     <link rel="icon" th:href="@{/images/stackoverflowfavicon.png}" type="image/x-icon">
     <style>
+        body {
+            margin: 0px;
+            padding: 0px;
+        }
         a {
             text-decoration: none;
         }
@@ -205,7 +209,7 @@
             font-family: Verdana, Geneva, Tahoma, sans-serif;
             display: inline;
         }
-        .flex--item, #filters-container a{
+        .flex--item, #filters-container form span button{
             font-family: fantasy;
             display: inline;
             width: fit-content;
@@ -213,7 +217,7 @@
             color: rgb(54, 51, 51);
             border: 0.5px solid hsl(210, 8%, 45%);
         }
-        .flex--item:hover, #filters-container a:hover {
+        .flex--item:hover, #filters-container form span button:hover {
             cursor: pointer;
             color: black;
             background-color: #666;
@@ -299,6 +303,9 @@
             font-family: sans-serif;
             font-weight: lighter;
             margin: 0px 0px 10px 0px;
+        }
+        #question-detail-container h3 a {
+            color: blue;
         }
         #question-desciption {
             font-family: serif;

@@ -116,7 +116,7 @@
                                 </a>
                             </div>
                             <div class="question-detail">
-                                <p th:text="${question.description}"></p>
+                                <p th:utext="${question.description}"></p>
                                 <br>
                                 <div class="tag-container" th:each="tag:${question.tags}">
                                     <a th:href="@{/questions/tagged/{tag}(tag = ${tag.name})}">

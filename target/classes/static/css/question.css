@@ -1,4 +1,9 @@
-a {
+
+        body {
+            margin: 0px;
+            padding: 0px;
+        }
+        a {
             text-decoration: none;
         }
         code {
@@ -380,3 +385,17 @@ a {
 .footer-column ul li a:hover {
   color: #0077cc;
 }
+
+        .tag-container {
+            display: inline-block;
+            background-color: #d9e1e6;
+            padding: 2.5px 7px 5px 7px;
+            border-radius: 2px;
+            margin: 10px 10px 0px 0px;
+            width: fit-content;
+        }
+        .tag-container a{
+            font-size: small;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #3881b4;
+        }

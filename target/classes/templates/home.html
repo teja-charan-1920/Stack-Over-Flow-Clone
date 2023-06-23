@@ -88,16 +88,16 @@
             border: none;
             padding: 10px;
             font-size: 14px;
-            outline: none;        
+            outline: none;
         }
         #searchContainer button {
-            display: none;       
-        }  
+            display: none;
+        }
         #searchContainer img {
             height: 17px;
             width: 17px;
             margin: 6px 0px 0px 9px;
-        }       
+        }
         .user-buttons {
             margin: -33px 0px 0px 1120px;
         }
@@ -241,6 +241,9 @@
             display: list-item ;
             list-style: none;
         }
+        #question-detail-container {
+            width: 800px;
+        }
         #question-detail-container h3{
             font-family: sans-serif;
             font-weight: lighter;
@@ -305,7 +308,7 @@
         }
         #related-tags-container {
             margin: 40px 0px 0px 0px;
-            
+
         }
         #related-tags-heading {
             padding: 12px 0px 12px 24px;
@@ -369,255 +372,208 @@
 .footer-column ul li a:hover {
   color: #0077cc;
 }
-    
-</style>
+#timestamp {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: small;
+}
+
+
+    </style>
 </head>
 <body>
-    <main id="aboveNavBar"></main>
-    <nav id="navBar">
-        <a th:href="@{/home}">
-            <div>
-                <svg aria-hidden="true" viewBox="0 0 32 37">
-                    <path d="M26 33v-9h4v13H0V24h4v9h22Z" fill="#BCBBBB"></path><path d="m21.5 0-2.7 2 9.9 13.3 2.7-2L21.5 0ZM26 18.4 13.3 7.8l2.1-2.5 12.7 10.6-2.1 2.5ZM9.1 15.2l15 7 1.4-3-15-7-1.4 3Zm14 10.79.68-2.95-16.1-3.35L7 23l16.1 2.99ZM23 30H7v-3h16v3Z" fill="#F48024"></path>
-                </svg>
-                <span>stack<b>overflow</b></span>
-            </div>
-        </a>
-        <ul class="nav-links">
-            <li><a href="https://stackoverflow.co/">About</a></li>
-            <li><a href="https://stackoverflow.co/advertising/">Products</a></li>
-            <li><a href="https://stackoverflow.co/teams/">For Teams</a></li>
-        </ul>
-        <form action="/" id="searchContainer">
-            <img th:src="@{/images/search-26234.png}" />
-            <input type="search" placeholder="Search..."/>
-            <button type="submit"></button>
-        </form>
-        <div class="user-buttons" sec:authorize="isAnonymous()">
-            <a th:href="@{/login}" class="login-button">Log In</a>
-            <a th:href="@{/signup}" class="signup-button">Sign Up</a>
+<main id="aboveNavBar"></main>
+<nav id="navBar">
+    <a th:href="@{/home}">
+        <div>
+            <svg aria-hidden="true" viewBox="0 0 32 37">
+                <path d="M26 33v-9h4v13H0V24h4v9h22Z" fill="#BCBBBB"></path>
+                <path d="m21.5 0-2.7 2 9.9 13.3 2.7-2L21.5 0ZM26 18.4 13.3 7.8l2.1-2.5 12.7 10.6-2.1 2.5ZM9.1 15.2l15 7 1.4-3-15-7-1.4 3Zm14 10.79.68-2.95-16.1-3.35L7 23l16.1 2.99ZM23 30H7v-3h16v3Z"
+                      fill="#F48024"></path>
+            </svg>
+            <span>stack<b>overflow</b></span>
         </div>
-        <div class="user-buttons" sec:authorize="isAuthenticated()">
-            <a th:href="@{/logout}" class="login-button">Log Out</a>
-        </div>
-    </nav>
-    <div id="containers">
-        <aside id="left-side-bar">
-            <div id="left-side-bar-container">
-                <nav role="navigation">
-                    <ol id="aside-nav-links">
-                        <li id="page-selected">
-                            <a th:href="@{/home}">
-                                <span>Home</span>
-                            </a>
-                        </li>
-                    </ol>
-                    <ol id="aside-nav-links">
-                        <li>
-                            <span>PUBLIC</span>
-                        </li>
-                        <li id="aside-nav-links-innerList">
-                            <a th:href="@{/}">
-                                <span>Questions</span>
-                            </a>
-                        </li>
-                        <li id="aside-nav-links-innerList">
-                            <a th:href="@{/tags}">
-                                <span>Tags</span>
-                            </a>
-                        </li>
-                        <li id="aside-nav-links-innerList">
-                            <a th:href="@{/users}">
-                                <span>Users</span>
-                            </a>
-                        </li>
-                        <li id="aside-nav-links-innerList">
-                            <a href="https://stackoverflow.com/jobs/companies">
-                                <span>Companies</span>
-                            </a>
-                        </li>
-                    </ol>
-                </nav>
-            </div>
-        </aside>
-        <section id="allQueAndSuggestionContainer">
-            <div id="count-filter-container">
-                <header>
-                    <b>Top Questions</b>
-                    <div id="askQueBtn">
-                        <a href="/questions/ask">Ask Question</a>
-                    </div>
-                </header>
-                <div>
-                    <div id="filters-container">
-                        <a href="#">
-                            <span>Interesting</span>
-                        </a>
-                        <a href="#">
-                            <span>Hot</span>
-                        </a>
-                        <a href="#">
-                            <span>Week</span>
-                        </a>
-                        <a href="#">
-                            <span>Month</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div id="questions-container" th:each="question : ${questions.questions}">
-                <div id="question-container">
-                    <div id="relatedinfo">
-                        <div th:if="${question.votes == null}">
-                            <span>0</span>
-                            <span th:text="${question.votes}"></span>
-                            <span>answers</span>
-                        </div>
-                        <div>
-                            <span>2</span>
-                            <span>views</span>
-                        </div>
-                    </div>
-                    <div id="question-detail-container">
-                        <h3>
-                            <a href="/" class="s-link">Error copying data from a csv file (with row number 2: found more columns than expected column count 41)</a>
-                        </h3>
-                        <div>
-                            <div id="tags-container">
-                                <div class="tag-container">
-                                    <a href="particular tag link">csv</a>
-                                </div>
-                                <div class="tag-container">
-                                    <a href="/questions/tagged/csv">csv</a>
-                                </div>                                
-                            </div>
-                            <div id="asker-info-container">
-                                <a href="#">
-                                    <div id="asker-info">
-                                        <a href="user link">BokA</a>
-                                        <span>1</span>
-                                        <span>asked/modified</span>
-                                        <span title="uploaded time">40 secs ago</span>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div id="question-container">
-                    <div id="relatedinfo">
-                        <div>
-                            <span>0000</span>
-                            <span>votes</span>
-                        </div>
-                        <div th:if="${question.votes != null}">
-                            <span th:text="${question.votes}"></span>
-                            <span>votes</span>
-                        </div>
-                        <div>
-                            <span th:text="${#sets.size(question.answers)}"></span>
-                            <span>answers</span>
-                        </div>
-                        <div th:if="${question.views == null}">
-                            <span>0</span>
-                            <span>views</span>
-                        </div>
-                        <div th:if="${question.views != null}">
-                            <span th:text="${question.views}"></span>
-                            <span>views</span>
-                        </div>
-                    </div>
-                    <div id="question-detail-container">
-                        <h3>
-                            <a th:href="@{/questions/{id}(id = ${question.questionId})}" class="s-link">
-                                <span th:text="${question.title}"></span>
-                            </a>
-                        </h3>
-                        <!--                    <div id="question-desciption" th:if="${#strings.length(question.description)>100}">-->
-                        <!--                        <span th:text="${#strings.substring(question.description, 0, 100)}"></span>-->
-                        <!--                    </div>-->
-                        <!--                    <div id="question-desciption" th:if="${#strings.length(question.description)<100}">-->
-                        <!--                        <span th:text="${question.description}"></span>-->
-                        <!--                    </div>-->
-                        <div>
-                            <div id="tags-container">
-                                <div class="tag-container" th:each="tag:${question.tags}">
-                                    <a th:href="@{/questions/tagged/{tag}(tag = ${tag.name})}">
-                                        <span th:text="${tag.name}"></span>
-                                    </a>
-                                </div>
-                            </div>
-                            <div id="asker-info-container">
-                                <a href="#">
-                                    <div id="asker-info">
-                                        <a href="user link">
-                                            <span th:text="${question.user.username}"></span>
-                                        </a>
-                                        <span title="reputation score"
-                                              th:text="${question.user.reputation}"></span>
-                                        <span>Updated</span>
-                                        <div th:each="question : ${questions.questions}">
-                                            <div th:with="timestamp1=${question.updatedAt}">
-                                                <div id="duration"
-                                                     th:data-timestamp1="${#dates.format(#dates.createNow().getTime() - timestamp1.getTime(), 'yyyy-MM-dd HH:mm:ss')}"></div>
-
-                                                <script th:inline="javascript">
-                                                function getTimeDiff(durationElement) {
-                                                    var timestamp1 = durationElement.getAttribute('data-timestamp1');
-                                                    var timestamp2 = new Date().getTime();
-                                                    var date1 = new Date(timestamp1);
-                                                    var date2 = new Date(timestamp2);
-                                                    var duration = date2.getTime() - date1.getTime();
-                                                    var hours = Math.floor(duration / (1000 * 60 * 60));
-                                                    var minutes = Math.floor((duration % (1000 * 60 * 60)) / (1000 * 60));
-                                                    var seconds = Math.floor((duration % (1000 * 60)) / 1000);
-
-                                                    return 'Duration: ' + hours + ' hours, ' + minutes + ' minutes, ' + seconds + ' seconds';
-                                                }
-
-                                                var durationElement = document.getElementById('duration');
-                                                var durationText = getTimeDiff(durationElement);
-                                                document.write(durationText);
-
-                                                                </script>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-            <aside id="options">
-                <div id="custom-filters-container">
-                    <div id="custom-filters-heading">Custom Filters</div>
-                    <div onclick="filteringOptions()" id="custom-filters-link">create a custom filter</div>
-                </div>
-                <div id="related-tags-container">
-                    <div id="related-tags-heading">Related Tags</div>
-                    <div id="related-tags-links">
-                        <a href="#">tag</a>
-                        <a href="#">tag</a>
-                        <a href="#">tag</a>
-                        <a href="#">tag</a>
-
-                    </div>
-                </div>
-            </aside>
+    </a>
+    <ul class="nav-links">
+        <li><a href="https://stackoverflow.co/">About</a></li>
+        <li><a href="https://stackoverflow.co/advertising/">Products</a></li>
+        <li><a href="https://stackoverflow.co/teams/">For Teams</a></li>
+    </ul>
+    <form action="/" id="searchContainer">
+        <img th:src="@{/images/search-26234.png}"/>
+        <input type="search" placeholder="Search..." name="search"/>
+        <button type="submit"></button>
+    </form>
+    <div class="user-buttons" sec:authorize="isAnonymous()">
+        <a th:href="@{/login}" class="login-button">Log In</a>
+        <a th:href="@{/signup}" class="signup-button">Sign Up</a>
     </div>
-    <footer class="footer">
-        <div class="footer-inner">
-            <a th:href="@{/home}" width="32" height="37" viewBox="0 0 32 37"><path d="M26 33v-9h4v13H0V24h4v9h22Z" fill="#BCBBBB"></path><path d="m21.5 0-2.7 2 9.9 13.3 2.7-2L21.5 0ZM26 18.4 13.3 7.8l2.1-2.5 12.7 10.6-2.1 2.5ZM9.1 15.2l15 7 1.4-3-15-7-1.4 3Zm14 10.79.68-2.95-16.1-3.35L7 23l16.1 2.99ZM23 30H7v-3h16v3Z" fill="#F48024"></path></svgx></a>
-          <div class="footer-column">
+    <div class="user-buttons" sec:authorize="isAuthenticated()">
+        <a th:href="@{/logout}" class="login-button">Log Out</a>
+        </div>
+</nav>
+<div id="containers">
+    <aside id="left-side-bar">
+        <div id="left-side-bar-container">
+            <nav role="navigation">
+                <ol id="aside-nav-links">
+                    <li id="page-selected">
+                        <a th:href="@{/home}">
+                            <span>Home</span>
+                        </a>
+                    </li>
+                </ol>
+                <ol id="aside-nav-links">
+                    <li>
+                        <span>PUBLIC</span>
+                    </li>
+                    <li id="aside-nav-links-innerList">
+                        <a th:href="@{/}">
+                            <span>Questions</span>
+                        </a>
+                    </li>
+                    <li id="aside-nav-links-innerList">
+                        <a th:href="@{/tags}">
+                            <span>Tags</span>
+                        </a>
+                    </li>
+                    <li id="aside-nav-links-innerList">
+                        <a th:href="@{/users}">
+                            <span>Users</span>
+                        </a>
+                    </li>
+                    <li id="aside-nav-links-innerList">
+                        <a href="https://stackoverflow.com/jobs/companies">
+                            <span>Companies</span>
+                        </a>
+                    </li>
+                </ol>
+            </nav>
+        </div>
+    </aside>
+    <section id="allQueAndSuggestionContainer">
+        <div id="count-filter-container">
+            <header>
+                <b>Top Questions</b>
+                <div id="askQueBtn">
+                    <a href="/questions/ask">Ask Question</a>
+                </div>
+            </header>
+            <div id="filters-container">
+                <form action="/home">
+                    <span><button value="votes" name="sort">Interesting</button></span>
+                    <span><button value="week" name="sort">Week</button></span>
+                    <span><button value="month" name="sort">Month</button></span>
+                </form>
+            </div>
+        </div>
+        <div id="questions-container" th:each="question : ${questions.questions}">
+            <div id="question-container">
+                <div id="question-detail-container">
+                    <h3>
+                        <a th:href="@{/questions/{id}(id = ${question.questionId})}" class="s-link">
+                            <span th:text="${question.title}"></span>
+                        </a>
+                    </h3>
+                    <div>
+                        <div id="tags-container">
+                            <div class="tag-container" th:each="tag:${question.tags}">
+                                <a th:href="@{/questions/tagged/{tag}(tag = ${tag.name})}">
+                                    <span th:text="${tag.name}"></span>
+                                </a>
+                            </div>
+                        </div>
+                        <div id="asker-info-container">
+                            <a href="#"></a>
+                            <div id="asker-info">
+                                <a href="user link">
+                                    <span th:text="${question.user.username}"></span>
+                                </a>
+                                <span title="reputation score"
+                                      th:text="${question.user.reputation}"></span>
+
+                                <div th:with="timestamp1=${question.updatedAt}" id="timestamp">
+                                    <span>Updated</span>
+                                    <div id="duration" th:data-timestamp1="${timestamp1}"></div>
+
+                                    <script th:inline="javascript">
+        function getTimeDiff(durationElement) {
+            var timestamp1 = durationElement.getAttribute('data-timestamp1');
+            var timestamp2 = new Date().getTime();
+            var date1 = new Date(timestamp1);
+            var date2 = new Date(timestamp2);
+            var duration = date2.getTime() - date1.getTime();
+            var days = Math.floor(duration / (1000 * 60 * 60 * 24));
+            var hours = Math.floor(duration / (1000 * 60 * 60));
+            var minutes = Math.floor((duration % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((duration % (1000 * 60)) / 1000);
+
+            if(days>0){
+            if(days == 1) {
+            return days +' day ago';
+            }
+             return days +' days ago';
+            }
+             else if(hours>0){
+             if(hours == 1) {
+            return hours +' hr ago';
+            }
+            return hours +' hrs ago';
+            } else if(minutes > 0) {
+            return  minutes +' mins ago';
+            } else {
+            return seconds +' secs ago';
+            }
+        }
+
+        var durationElements = document.querySelectorAll('#duration');
+        durationElements.forEach(function(durationElement) {
+            var durationText = getTimeDiff(durationElement);
+            durationElement.textContent = durationText;
+        });
+
+                                    </script>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <aside id="options">
+        <div id="custom-filters-container">
+            <div id="custom-filters-heading">Custom Filters</div>
+            <div onclick="filteringOptions()" id="custom-filters-link">create a custom filter</div>
+        </div>
+        <div id="related-tags-container">
+            <div id="related-tags-heading">Related Tags</div>
+            <div id="related-tags-links" th:each="tag, iterStat : ${questions.tags}"
+                 th:if="${iterStat.count} &lt;= 10">
+                <a th:href="@{/questions/tagged/{tag}(tag=${tag.name})}">
+                    <span th:text="${tag.name}"></span>
+                </a>
+            </div>
+        </div>
+    </aside>
+</div>
+<footer class="footer">
+    <div class="footer-inner">
+        <a th:href="@{/home}" width="32" height="37" viewBox="0 0 32 37">
+            <path d="M26 33v-9h4v13H0V24h4v9h22Z" fill="#BCBBBB"></path>
+            <path d="m21.5 0-2.7 2 9.9 13.3 2.7-2L21.5 0ZM26 18.4 13.3 7.8l2.1-2.5 12.7 10.6-2.1 2.5ZM9.1 15.2l15 7 1.4-3-15-7-1.4 3Zm14 10.79.68-2.95-16.1-3.35L7 23l16.1 2.99ZM23 30H7v-3h16v3Z"
+                  fill="#F48024"></path>
+            </svgx></a>
+        <div class="footer-column">
             <h4>STACK OVERFLOW</h4>
             <ul>
                 <li><a th:href="@{/}">Questions</a></li>
                 <li><a href="https://stackoverflow.com/help">Help</a></li>
             </ul>
-          </div>
-          <div class="footer-column">
+        </div>
+        <div class="footer-column">
             <h4>PRODUCTS</h4>
             <ul>
                 <li><a href="https://stackoverflow.co/teams/">Team</a></li>
@@ -625,8 +581,8 @@
                 <li><a href="https://stackoverflow.co/collectives/">Collectives</a></li>
                 <li><a href="https://stackoverflow.co/talent/">Talent</a></li>
             </ul>
-          </div>
-          <div class="footer-column">
+        </div>
+        <div class="footer-column">
             <h4>COMPANY</h4>
             <ul>
                 <li><a href="https://stackoverflow.co/">About</a></li>
@@ -634,15 +590,15 @@
                 <li><a href="https://stackoverflow.co/company/work-here">Work here</a></li>
                 <li><a href="https://stackoverflow.com/legal/terms-of-service">Legal</a></li>
             </ul>
-          </div>
-          <div class="footer-column">
+        </div>
+        <div class="footer-column">
             <h4>STACK EXCHANGE NETWORK</h4>
             <ul>
                 <li><a href="https://stackexchange.com/sites#technology">Technology</a></li>
                 <li><a href="https://stackexchange.com/sites#science">Science</a></li>
                 <li><a href="https://stackexchange.com/sites#business">Business</a></li>
             </ul>
-          </div>
         </div>
-      </footer>
+    </div>
+</footer>
 </body>

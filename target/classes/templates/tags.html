@@ -1,4 +1,4 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
@@ -6,6 +6,10 @@
     <title>all tags</title>
     <link rel="icon" th:href="@{/images/stackoverflowfavicon.png}" type="image/x-icon">
     <style>
+        body {
+            margin: 0px;
+            padding: 0px;
+        }
         a {
             text-decoration: none;
         }
@@ -241,6 +245,18 @@
             margin: 20px 0px 0px 0px;
             color: hsl(210, 1%, 44%);
         }
+        #pagination{
+        margin: 50px 0px 30px 0px;
+        display:flex;
+        flex-direction: column;
+    }
+   .nextForm {
+        display: flex;
+        justify-content: flex-end;   }
+   .prevForm {
+        display: flex;
+        justify-content: flex-start;
+   }
         /* Footer styles */
 .footer {
   background-color: hsl(210, 8%, 15%);
@@ -284,150 +300,163 @@
 .footer-column ul li a:hover {
   color: #0077cc;
 }
-</style>
+
+    </style>
 </head>
 <body>
-    <main id="aboveNavBar"></main>
-    <nav id="navBar">
-        <a th:href="@{/home}">
-            <div>
-                <svg aria-hidden="true" viewBox="0 0 32 37">
-                    <path d="M26 33v-9h4v13H0V24h4v9h22Z" fill="#BCBBBB"></path><path d="m21.5 0-2.7 2 9.9 13.3 2.7-2L21.5 0ZM26 18.4 13.3 7.8l2.1-2.5 12.7 10.6-2.1 2.5ZM9.1 15.2l15 7 1.4-3-15-7-1.4 3Zm14 10.79.68-2.95-16.1-3.35L7 23l16.1 2.99ZM23 30H7v-3h16v3Z" fill="#F48024"></path>
-                </svg>
-                <span>stack<b>overflow</b></span>
-            </div>
-        </a>
-        <ul class="nav-links">
-            <li><a href="https://stackoverflow.co/">About</a></li>
-            <li><a href="https://stackoverflow.co/advertising/">Products</a></li>
-            <li><a href="https://stackoverflow.co/teams/">For Teams</a></li>
-        </ul>
-        <form action="/" id="searchContainer">
-            <img th:src="@{/images/search-26234.png}" />
-            <input type="search" placeholder="Search..." name="search"/>
-            <button type="submit"></button>
-        </form>
-        <div class="user-buttons" sec:authorize="isAnonymous()">
-            <a th:href="@{/login}" class="login-button">Log In</a>
-            <a th:href="@{/signup}" class="signup-button">Sign Up</a>
+<main id="aboveNavBar"></main>
+<nav id="navBar">
+    <a th:href="@{/home}">
+        <div>
+            <svg aria-hidden="true" viewBox="0 0 32 37">
+                <path d="M26 33v-9h4v13H0V24h4v9h22Z" fill="#BCBBBB"></path>
+                <path d="m21.5 0-2.7 2 9.9 13.3 2.7-2L21.5 0ZM26 18.4 13.3 7.8l2.1-2.5 12.7 10.6-2.1 2.5ZM9.1 15.2l15 7 1.4-3-15-7-1.4 3Zm14 10.79.68-2.95-16.1-3.35L7 23l16.1 2.99ZM23 30H7v-3h16v3Z"
+                      fill="#F48024"></path>
+            </svg>
+            <span>stack<b>overflow</b></span>
         </div>
-        <div class="user-buttons" sec:authorize="isAuthenticated()">
-            <a th:href="@{/logout}" class="login-button">Log Out</a>
-        </div>
-    </nav>
-    <div id="containers">
-        <aside id="left-side-bar">
-            <div id="left-side-bar-container">
-                <nav role="navigation">
-                    <ol id="aside-nav-links">
-                        <li>
-                            <a th:href="@{/home}">
-                                <span>Home</span>
-                            </a>
-                        </li>
-                    </ol>
-                    <ol id="aside-nav-links">
-                        <li>
-                            <span>PUBLIC</span>
-                        </li>
-                        <li id="aside-nav-links-innerList">
-                            <a th:href="@{/}">
-                                <span>Questions</span>
-                            </a>
-                        </li>
-                        <li id="aside-nav-links-innerList-selected">
-                            <a th:href="@{/tags}">
-                                <span>Tags</span>
-                            </a>
-                        </li>
-                        <li id="aside-nav-links-innerList">
-                            <a th:href="@{/users}">
-                                <span>Users</span>
-                            </a>
-                        </li>
-                        <li id="aside-nav-links-innerList">
-                            <a href="https://stackoverflow.com/jobs/companies">
-                                <span>Companies</span>
-                            </a>
-                        </li>
-                    </ol>
-                </nav>
-            </div>
-        </aside>
-        <section id="tags-container">
-            <header id="tags-header">
-                <span>Tags</span>
-                <p>A tag is a keyword or label that categorizes your question with other, similar questions. Using the right tags makes it easier for others to find and answer your question.</p>
-            </header>
-            <div id="search-sort-container">
-                <form action="/tags">
-                    <div id="search-container">
-                        <svg width="18" height="18" viewBox="0 0 18 18"><path d="m18 16.5-5.14-5.18h-.35a7 7 0 1 0-1.19 1.19v.35L16.5 18l1.5-1.5ZM12 7A5 5 0 1 1 2 7a5 5 0 0 1 10 0Z"></path></svg>
-                        <input type="text" placeholder="Filter by tag name" name="search">
-                        <input type="hidden" name="sort"
-                               th:if="${not #strings.isEmpty(tags.sortBy) and tags.sortBy != 'createdAt'}"
-                               th:value="${tags.sortBy}"/>
-                        <button type="submit" style="display: none;"></button>
-                    </div>
-                </form>
-                <div id="filters-container">
-                    <form>
-                        <span><button value="updatedAt" name="sort">Popular</button></span>
-                        <span><button value="name" name="sort">Name</button></span>
-                        <span><button value="createdAt" name="sort">New</button></span>
-                        <input type="hidden" name="search" th:if="${not #strings.isEmpty(tags.search)}"
-                               th:value="${tags.search}"/>
-                    </form>
-                </div>
-            </div>
-            <div id="tags">
-                <div id="tag" th:each="tag : ${tags.tags}">
-                    <a th:href="@{/questions/tagged/{tag}(tag=${tag.name})}">
-                        <header th:text="${tag.name}"></header>
-                    </a>
-                    
-                    <div id="total-question-count">
-                        <span>Created At</span>
-                        <span id="totalquecount" th:text="${tag.createdAt}"></span>
-                    </div>
-                </div>
-            </div>
-        </section>
+    </a>
+    <ul class="nav-links">
+        <li><a href="https://stackoverflow.co/">About</a></li>
+        <li><a href="https://stackoverflow.co/advertising/">Products</a></li>
+        <li><a href="https://stackoverflow.co/teams/">For Teams</a></li>
+    </ul>
+    <form action="/" id="searchContainer">
+        <img th:src="@{/images/search-26234.png}"/>
+        <input type="search" placeholder="Search..." name="search"/>
+        <button type="submit"></button>
+    </form>
+    <div class="user-buttons" sec:authorize="isAnonymous()">
+        <a th:href="@{/login}" class="login-button">Log In</a>
+        <a th:href="@{/signup}" class="signup-button">Sign Up</a>
     </div>
+    <div class="user-buttons" sec:authorize="isAuthenticated()">
+        <a th:href="@{/logout}" class="login-button">Log Out</a>
+    </div>
+</nav>
+<div id="containers">
+    <aside id="left-side-bar">
+        <div id="left-side-bar-container">
+            <nav role="navigation">
+                <ol id="aside-nav-links">
+                    <li>
+                        <a th:href="@{/home}">
+                            <span>Home</span>
+                        </a>
+                    </li>
+                </ol>
+                <ol id="aside-nav-links">
+                    <li>
+                        <span>PUBLIC</span>
+                    </li>
+                    <li id="aside-nav-links-innerList">
+                        <a th:href="@{/}">
+                            <span>Questions</span>
+                        </a>
+                    </li>
+                    <li id="aside-nav-links-innerList-selected">
+                        <a th:href="@{/tags}">
+                            <span>Tags</span>
+                        </a>
+                    </li>
+                    <li id="aside-nav-links-innerList">
+                        <a th:href="@{/users}">
+                            <span>Users</span>
+                        </a>
+                    </li>
+                    <li id="aside-nav-links-innerList">
+                        <a href="https://stackoverflow.com/jobs/companies">
+                            <span>Companies</span>
+                        </a>
+                    </li>
+                </ol>
+            </nav>
+        </div>
+    </aside>
+    <section id="tags-container">
+        <header id="tags-header">
+            <span>Tags</span>
+            <p>A tag is a keyword or label that categorizes your question with other, similar questions. Using the right
+                tags makes it easier for others to find and answer your question.</p>
+        </header>
+        <div id="search-sort-container">
+            <form action="/tags">
+                <div id="search-container">
+                    <svg width="18" height="18" viewBox="0 0 18 18">
+                        <path d="m18 16.5-5.14-5.18h-.35a7 7 0 1 0-1.19 1.19v.35L16.5 18l1.5-1.5ZM12 7A5 5 0 1 1 2 7a5 5 0 0 1 10 0Z"></path>
+                    </svg>
+                    <input type="text" placeholder="Filter by tag name" name="search">
+                    <input type="hidden" name="sort"
+                           th:if="${not #strings.isEmpty(tags.sortBy) and tags.sortBy != 'createdAt'}"
+                           th:value="${tags.sortBy}"/>
+                    <button type="submit" style="display: none;"></button>
+                </div>
+            </form>
+            <div id="filters-container">
+                <form>
+                    <span><button value="updatedAt" name="sort">Popular</button></span>
+                    <span><button value="name" name="sort">Name</button></span>
+                    <span><button value="createdAt" name="sort">New</button></span>
+                    <input type="hidden" name="search" th:if="${not #strings.isEmpty(tags.search)}"
+                           th:value="${tags.search}"/>
+                </form>
+            </div>
+        </div>
+        <div id="tags">
+            <div id="tag" th:each="tag : ${tags.tags}">
+                <a th:href="@{/questions/tagged/{tag}(tag=${tag.name})}">
+                    <header th:text="${tag.name}"></header>
+                </a>
 
-    <form class="prevForm" th:if="${tags.page > 1}"
-          th:action="@{/tags(page=${tags.page - 1})}" method="get">
-        <input type="hidden" name="page" th:value="${tags.page - 1}"/>
-        <input type="hidden" name="search" th:if="${not #strings.isEmpty(tags.search)}"
-               th:value="${tags.search}"/>
-        <input type="hidden" name="sort"
-               th:if="${not #strings.isEmpty(tags.sortBy) and tags.sortBy != 'createdAt'}"
-               th:value="${tags.sortBy}"/>
-        <button type="submit" class="nextButton">&laquo;Previous</button>
-    </form>
+                <div id="total-question-count">
+                    <span>Created At</span>
+                    <span id="totalquecount" th:text="${tag.createdAt}"></span>
+                </div>
+            </div>
+        </div>
+        <div id="pagination">
+            <form class="prevForm" th:if="${tags.page > 1}"
+                  th:action="@{/tags(page=${tags.page - 1})}" method="get">
+                <input type="hidden" name="page" th:value="${tags.page - 1}"/>
+                <input type="hidden" name="search" th:if="${not #strings.isEmpty(tags.search)}"
+                       th:value="${tags.search}"/>
+                <input type="hidden" name="sort"
+                       th:if="${not #strings.isEmpty(tags.sortBy) and tags.sortBy != 'createdAt'}"
+                       th:value="${tags.sortBy}"/>
+                <button type="submit" class="nextButton">&laquo;Previous</button>
+            </form>
 
-    <form class="nextForm" th:if="${tags.page < tags.totalPages}"
-          th:action="@{/tags(page=${tags.page + 1})}" method="get">
-        <input type="hidden" name="page" th:value="${tags.page + 1}"/>
-        <input type="hidden" name="search" th:if="${not #strings.isEmpty(tags.search)}"
-               th:value="${tags.search}"/>
-        <input type="hidden" name="sort"
-               th:if="${not #strings.isEmpty(tags.sortBy) and tags.sortBy != 'createdAt'}"
-               th:value="${tags.sortBy}"/>
-        <button type="submit" class="nextButton">Next&raquo;</button>
-    </form>
+            <form class="nextForm" th:if="${tags.page < tags.totalPages}"
+                  th:action="@{/tags(page=${tags.page + 1})}" method="get">
+                <input type="hidden" name="page" th:value="${tags.page + 1}"/>
+                <input type="hidden" name="search" th:if="${not #strings.isEmpty(tags.search)}"
+                       th:value="${tags.search}"/>
+                <input type="hidden" name="sort"
+                       th:if="${not #strings.isEmpty(tags.sortBy) and tags.sortBy != 'createdAt'}"
+                       th:value="${tags.sortBy}"/>
+                <button type="submit" class="nextButton">Next&raquo;</button>
+            </form>
+        </div>
+    </section>
+</div>
 
-    <footer class="footer">
-        <div class="footer-inner">
-            <a th:href="@{/home}" aria-label="Stack Overflow"><svg aria-hidden="true" class="native svg-icon iconLogoGlyphMd" width="32" height="37" viewBox="0 0 32 37"><path d="M26 33v-9h4v13H0V24h4v9h22Z" fill="#BCBBBB"></path><path d="m21.5 0-2.7 2 9.9 13.3 2.7-2L21.5 0ZM26 18.4 13.3 7.8l2.1-2.5 12.7 10.6-2.1 2.5ZM9.1 15.2l15 7 1.4-3-15-7-1.4 3Zm14 10.79.68-2.95-16.1-3.35L7 23l16.1 2.99ZM23 30H7v-3h16v3Z" fill="#F48024"></path></svg></a>
-          <div class="footer-column">
+<footer class="footer">
+    <div class="footer-inner">
+        <a th:href="@{/home}" aria-label="Stack Overflow">
+            <svg aria-hidden="true" class="native svg-icon iconLogoGlyphMd" width="32" height="37" viewBox="0 0 32 37">
+                <path d="M26 33v-9h4v13H0V24h4v9h22Z" fill="#BCBBBB"></path>
+                <path d="m21.5 0-2.7 2 9.9 13.3 2.7-2L21.5 0ZM26 18.4 13.3 7.8l2.1-2.5 12.7 10.6-2.1 2.5ZM9.1 15.2l15 7 1.4-3-15-7-1.4 3Zm14 10.79.68-2.95-16.1-3.35L7 23l16.1 2.99ZM23 30H7v-3h16v3Z"
+                      fill="#F48024"></path>
+            </svg>
+        </a>
+        <div class="footer-column">
             <h4>STACK OVERFLOW</h4>
             <ul>
-              <li><a th:href="@{/}">Questions</a></li>
-              <li><a href="https://stackoverflow.com/help">Help</a></li>
+                <li><a th:href="@{/}">Questions</a></li>
+                <li><a href="https://stackoverflow.com/help">Help</a></li>
             </ul>
-          </div>
-          <div class="footer-column">
+        </div>
+        <div class="footer-column">
             <h4>PRODUCTS</h4>
             <ul>
                 <li><a href="https://stackoverflow.co/teams/">Team</a></li>
@@ -435,8 +464,8 @@
                 <li><a href="https://stackoverflow.co/collectives/">Collectives</a></li>
                 <li><a href="https://stackoverflow.co/talent/">Talent</a></li>
             </ul>
-          </div>
-          <div class="footer-column">
+        </div>
+        <div class="footer-column">
             <h4>COMPANY</h4>
             <ul>
                 <li><a href="https://stackoverflow.co/">About</a></li>
@@ -444,15 +473,15 @@
                 <li><a href="https://stackoverflow.co/company/work-here">Work here</a></li>
                 <li><a href="https://stackoverflow.com/legal/terms-of-service">Legal</a></li>
             </ul>
-          </div>
-          <div class="footer-column">
+        </div>
+        <div class="footer-column">
             <h4>STACK EXCHANGE NETWORK</h4>
             <ul>
                 <li><a href="https://stackexchange.com/sites#technology">Technology</a></li>
                 <li><a href="https://stackexchange.com/sites#science">Science</a></li>
                 <li><a href="https://stackexchange.com/sites#business">Business</a></li>
             </ul>
-          </div>
         </div>
-      </footer>
+    </div>
+</footer>
 </body>
